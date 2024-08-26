@@ -72,12 +72,12 @@ const ContentList = async ({
 
   contentToDisplay.sort((a, b) => a.title.localeCompare(b.title));
 
-  const categories: ContentCategory[] = [
-    'books',
-    'articles',
-    'podcasts',
-    'tweets',
-    'supplementals'
+  const categories: { title: ContentCategory; colour: string }[] = [
+    { title: 'books', colour: 'bg-blue-600' },
+    { title: 'articles', colour: 'bg-green-600' },
+    { title: 'podcasts', colour: 'bg-purple-600' },
+    { title: 'tweets', colour: 'bg-red-600' },
+    { title: 'supplementals', colour: 'bg-yellow-600' }
   ];
 
   return (
@@ -115,18 +115,29 @@ const ContentList = async ({
           )}
         </div>
         <div className="flex-1">
-          <div className="flex flex-wrap gap-1 mb-5 justify-center sm:justify-start">
+          <div className="flex flex-wrap gap-2 mb-5 justify-center sm:justify-start">
+            <Link
+              key="all"
+              href={`/content/`}
+              className={`inline-block text-xs py-1 px-2 rounded-md font-mono uppercase ${
+                !currentCategory
+                  ? 'bg-gray-800 text-gray-200 '
+                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+              }`}
+            >
+              All
+            </Link>
             {categories.map(category => (
               <Link
-                key={category}
-                href={`/content/?category=${category}`}
+                key={category.title}
+                href={`/content/?category=${category.title}`}
                 className={`inline-block text-xs py-1 px-2 rounded-md font-mono uppercase ${
-                  category === currentCategory
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-300 text-gray-700'
+                  category.title === currentCategory
+                    ? `${category.colour} text-white`
+                    : `bg-gray-200 text-gray-800 hover:bg-gray-300`
                 }`}
               >
-                {category}
+                {category.title}
               </Link>
             ))}
           </div>
