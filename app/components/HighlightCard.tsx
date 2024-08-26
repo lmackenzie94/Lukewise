@@ -3,11 +3,17 @@
 import { ListHighlight } from '../types';
 import { useState } from 'react';
 import { deleteHighlight, updateHighlight } from '../actions';
-import { FaEdit, FaSave, FaTimes, FaTrash, FaTrashAlt } from 'react-icons/fa';
+import {
+  FaCheckCircle,
+  FaEdit,
+  FaSave,
+  FaTimes,
+  FaTrashAlt
+} from 'react-icons/fa';
 import DOMPurify from 'isomorphic-dompurify';
 import { useFormStatus } from 'react-dom';
 
-function SubmitButton() {
+function SaveButton() {
   const { pending } = useFormStatus();
 
   return (
@@ -24,8 +30,26 @@ function SubmitButton() {
   );
 }
 
+function ConfirmDeleteButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      className="text-red-400 hover:text-red-500 disabled:text-red-300"
+      title="Delete highlight"
+      aria-label="Delete highlight"
+      disabled={pending}
+    >
+      <FaCheckCircle aria-hidden="true" className="text-xl" />
+      <span className="sr-only">Delete highlight</span>
+    </button>
+  );
+}
+
 export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const toggleEditing = () => {
@@ -44,12 +68,15 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
     setError(null);
   };
 
-  const handleDelete = async () => {
-    if (!confirm('Are you sure you want to delete this highlight?')) {
+  const handleDelete = async (formData: FormData) => {
+    const response = await deleteHighlight(formData);
+    if (!response.ok) {
+      setError(response.message);
       return;
     }
 
-    await deleteHighlight(highlight.id, highlight.book_id);
+    setIsDeleting(false);
+    setError(null);
   };
 
   const sanitizedText = DOMPurify.sanitize(highlight.text);
@@ -72,7 +99,7 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
               placeholder="Password"
             />
             <div className="flex gap-2 text-lg">
-              <SubmitButton />
+              <SaveButton />
               <button
                 type="button"
                 onClick={toggleEditing}
@@ -102,7 +129,7 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
             </details>
           )}
 
-          {!isEditing && (
+          {!isDeleting && (
             <div className="flex justify-end mt-4 gap-2">
               <button
                 onClick={toggleEditing}
@@ -114,7 +141,7 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
                 <span className="sr-only">Edit highlight</span>
               </button>
               <button
-                onClick={handleDelete}
+                onClick={() => setIsDeleting(true)}
                 className="text-red-400 hover:text-red-500"
                 title="Delete highlight"
                 aria-label="Delete highlight"
@@ -124,10 +151,40 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
               </button>
             </div>
           )}
+
+          {isDeleting && (
+            <form
+              action={handleDelete}
+              className="flex gap-2 justify-end mt-4 text-sm"
+            >
+              <input type="hidden" name="highlight_id" value={highlight.id} />
+              <input type="hidden" name="book_id" value={highlight.book_id} />
+              <input
+                type="password"
+                name="password"
+                required
+                placeholder="Password"
+              />
+              <ConfirmDeleteButton />
+              <button
+                type="button"
+                onClick={() => {
+                  setIsDeleting(false);
+                  setError(null);
+                }}
+                className="text-blue-400 hover:text-blue-500 text-lg"
+                title="Cancel"
+                aria-label="Cancel"
+              >
+                <FaTimes aria-hidden="true" />
+                <span className="sr-only">Cancel</span>
+              </button>
+            </form>
+          )}
         </>
       )}
 
-      {error && <p className="text-red-500 mt-4">{error}</p>}
+      {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
     </div>
   );
 };

@@ -10,13 +10,11 @@ export const updateHighlight = async (
   ok: boolean;
   message: string;
 }> => {
-  // check password
-  const password = formData.get('password');
-  if (password !== process.env.EDIT_PASSWORD) {
+  if (!passwordIsCorrect(formData)) {
     return {
       ok: false,
       status: 401,
-      message: 'Wrong password, my guy 🙅🏻‍♂️'
+      message: 'Wrong password 🙅🏻‍♂️'
     };
   }
 
@@ -45,10 +43,38 @@ export const updateHighlight = async (
   };
 };
 
-export const deleteHighlight = async (id: number, book_id: number) => {
-  await fetchReadwise(`highlights/${id}/`, {
+export const deleteHighlight = async (
+  formData: FormData
+): Promise<{
+  status: number;
+  ok: boolean;
+  message: string;
+}> => {
+  if (!passwordIsCorrect(formData)) {
+    return {
+      ok: false,
+      status: 401,
+      message: 'Wrong password 🙅🏻‍♂️'
+    };
+  }
+
+  const highlightId = formData.get('highlight_id');
+  const bookId = formData.get('book_id');
+
+  await fetchReadwise(`highlights/${highlightId}/`, {
     method: 'DELETE'
   });
 
-  revalidatePath(`/content/${book_id}`);
+  revalidatePath(`/content/${bookId}`);
+
+  return {
+    ok: true,
+    status: 200,
+    message: 'Highlight deleted'
+  };
+};
+
+const passwordIsCorrect = (formData: FormData) => {
+  const password = formData.get('password');
+  return password === process.env.EDIT_PASSWORD;
 };
