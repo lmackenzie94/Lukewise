@@ -1,3 +1,11 @@
+// API Response Types --------------------------------------------------------
+export type ReviewResponse = {
+  review_id: number;
+  review_url: string;
+  review_completed: boolean;
+  highlights: ReviewHighlight[];
+};
+
 type BaseHighlight = {
   id: number;
   text: string;
@@ -32,11 +40,15 @@ export type ReviewHighlight = BaseHighlight & {
   api_source: string | null;
 };
 
+export type ReviewHighlightWithBookIds = ReviewHighlight & {
+  book_id: number;
+};
+
 export type DailyReview = {
   review_id: number;
   review_url: string;
   review_completed: boolean;
-  highlights: ReviewHighlight[];
+  highlights: ReviewHighlightWithBookIds[];
 };
 
 export type ListHighlight = BaseHighlight & {

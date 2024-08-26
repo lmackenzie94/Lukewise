@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import {
   getAllBooks,
-  getBooks,
   getBooksForAuthor,
   getBooksForCategory
 } from '@/app/lib/readwise';

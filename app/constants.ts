@@ -5,5 +5,3 @@ export const navLinks = [
   { label: 'Books', href: '/books' },
   { label: 'Favourites', href: '/favourites' }
 ];
-
-export const hiddenBookIds = [1000000000000000000];

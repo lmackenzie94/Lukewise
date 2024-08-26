@@ -22,7 +22,7 @@ export default async function BookPage({ params }: { params: { id: string } }) {
           />
         )}
         <div>
-          <p className="text-base font-bold text-blue-500">{book.author}</p>
+          <p className="text-sm font-bold text-blue-500">{book.author}</p>
 
           {book.source_url ? (
             <Link

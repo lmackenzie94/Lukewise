@@ -24,19 +24,16 @@ export const updateHighlight = async (
   const text = formData.get('text');
   const note = formData.get('note');
 
-  const data = await fetchReadwise(
-    `highlights/${id}/`,
-    {
-      method: 'PATCH',
-      body: JSON.stringify({
-        text,
-        note
-      })
-    },
-    {
+  const data = await fetchReadwise(`highlights/${id}/`, {
+    method: 'PATCH',
+    headers: {
       'Content-Type': 'application/json'
-    }
-  );
+    },
+    body: JSON.stringify({
+      text,
+      note
+    })
+  });
 
   // TODO: better way to do this? use tags?
   revalidatePath(`/books/${data.book_id}`);

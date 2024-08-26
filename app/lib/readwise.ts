@@ -8,24 +8,28 @@ import {
   FavouriteHighlight,
   HighlightsList,
   HighlightsListWithBookInfo,
-  ListHighlight
+  ListHighlight,
+  ReviewResponse
 } from '@/app/types';
+
+import { decode } from 'html-entities';
 
 const READWISE_API_BASE = 'https://readwise.io/api/v2';
 const READWISE_API_KEY = process.env.READWISE_API_KEY;
 
 import favouritesData from '@/app/data/favourites.json';
 
+const BOOKS_TO_HIDE = [41615353, 41515405];
+
 export async function fetchReadwise(
   endpoint: string,
-  options: RequestInit = {},
-  additionalHeaders: Record<string, string> = {}
+  options: RequestInit = {}
 ) {
   try {
     const response = await fetch(`${READWISE_API_BASE}/${endpoint}`, {
       headers: {
         Authorization: `Token ${READWISE_API_KEY}`,
-        ...additionalHeaders
+        ...options.headers
       },
       ...options
     });
@@ -49,8 +53,30 @@ export async function fetchReadwise(
 
 // DAILY REVIEW ---------------------------------------------------------------
 export async function getDailyReview(): Promise<DailyReview> {
-  const data = await fetchReadwise('review/');
-  return data;
+  const data: ReviewResponse = await fetchReadwise('review/');
+
+  const highlightsWithBookIds = await Promise.all(
+    data.highlights.map(async highlight => {
+      // fetch the book id based on highlight id
+      const highlightDetail = await getHighlight(highlight.id);
+      return {
+        ...highlight,
+        book_id: highlightDetail.book_id
+      };
+    })
+  );
+
+  const visibleHighlights = highlightsWithBookIds.filter(highlight => {
+    if (highlight.book_id) {
+      return !BOOKS_TO_HIDE.includes(highlight.book_id);
+    }
+    return true;
+  });
+
+  return {
+    ...data,
+    highlights: visibleHighlights
+  };
 }
 
 // HIGHLIGHTS -----------------------------------------------------------------
@@ -83,14 +109,7 @@ export async function getHighlights(options?: {
   };
 }
 
-export async function getRecentHighlights(
-  num: number = 4
-): Promise<HighlightsList> {
-  const data = await fetchReadwise(`highlights/?page_size=${num}`);
-  return data;
-}
-
-export async function getHighlight(id: string): Promise<ListHighlight> {
+export async function getHighlight(id: number): Promise<ListHighlight> {
   const data = await fetchReadwise(`highlights/${id}/`);
   return data;
 }
@@ -125,42 +144,48 @@ export function getFavouriteHighlights({
 }): { count: number; results: FavouriteHighlight[] } {
   const data: FavouriteHighlight[] = favouritesData;
 
+  const paginatedResults = data.slice((page - 1) * pageSize, page * pageSize);
+  const visibleHighlights = paginatedResults.filter(highlight => {
+    if (highlight.user_book_id) {
+      return !BOOKS_TO_HIDE.includes(highlight.user_book_id);
+    }
+    return true;
+  });
+
   return {
     count: data.length,
-    results: data.slice((page - 1) * pageSize, page * pageSize)
+    results: visibleHighlights
   };
 }
 
 // BOOKS ----------------------------------------------------------------------
-export async function getBooks(pageSize: number = 20): Promise<BooksList> {
-  const data = await fetchReadwise(`books/?page_size=${pageSize}`);
-  return data;
-}
-
 export async function getAllBooks(): Promise<Book[]> {
   let allBooks: Book[] = [];
+  let currentPage = 1;
+  let hasNextPage = false;
 
-  // max page_size is 1000
-  const data: BooksList = await fetchReadwise(`books/?page_size=1000`);
-  allBooks = allBooks.concat(data.results);
+  do {
+    // max page_size is 1000
+    const data: BooksList = await fetchReadwise(
+      `books/?page_size=1000&page=${currentPage}`
+    );
+    allBooks = allBooks.concat(data.results);
+    hasNextPage = Boolean(data.next);
+    currentPage++;
+  } while (hasNextPage);
 
-  // TODO: do this recursively
-  if (data.next) {
-    const nextPage = await fetchReadwise(data.next);
-    allBooks = allBooks.concat(nextPage.results);
-  }
+  const visibleBooks = allBooks.filter(
+    book => !BOOKS_TO_HIDE.includes(book.id)
+  );
 
-  return allBooks;
-}
+  const decodedBooks = visibleBooks.map(decodeBookTitle);
 
-export async function getRecentBooks(num: number = 4): Promise<BooksList> {
-  const data = await fetchReadwise(`books/?page_size=${num}`);
-  return data;
+  return decodedBooks;
 }
 
 export async function getBook(id: string): Promise<Book> {
-  const data = await fetchReadwise(`books/${id}/`);
-  return data;
+  const data: Book = await fetchReadwise(`books/${id}/`);
+  return decodeBookTitle(data);
 }
 
 export async function getBookHighlights(id: string): Promise<HighlightsList> {
@@ -190,4 +215,13 @@ export async function getAllAuthors(): Promise<string[]> {
   const uniqueAuthors = Array.from(new Set(authors));
 
   return uniqueAuthors;
+}
+
+function decodeBookTitle(book: Book): Book {
+  // decode the title because some contain HTML entities like &#39; (ex. "What's Our Problem?" book)
+
+  return {
+    ...book,
+    title: decode(book.title)
+  };
 }
