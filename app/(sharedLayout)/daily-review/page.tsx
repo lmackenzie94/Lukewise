@@ -6,8 +6,10 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { Metadata } from 'next';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 
+const PAGE_TITLE = 'Daily Review';
+
 export const metadata: Metadata = {
-  title: `${SITE_TITLE} | Daily Review`,
+  title: `${SITE_TITLE} | ${PAGE_TITLE}`,
   description: SITE_DESCRIPTION
 };
 
@@ -36,7 +38,7 @@ export default async function Home({
         {todaysDate}
       </p>
       <h1 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
-        Daily Review
+        {PAGE_TITLE}
       </h1>
       <HighlightStack currentHighlight={currentHighlight} />
 

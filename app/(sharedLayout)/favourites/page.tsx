@@ -7,8 +7,10 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { Metadata } from 'next';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 
+const PAGE_TITLE = 'Favourites';
+
 export const metadata: Metadata = {
-  title: `${SITE_TITLE} | Favourites`,
+  title: `${SITE_TITLE} | ${PAGE_TITLE}`,
   description: SITE_DESCRIPTION
 };
 
@@ -24,7 +26,7 @@ export default function FavouritesPage({
   return (
     <main className="container max-w-screen-sm">
       <h1 className="text-2xl font-bold mb-6 text-center sr-only">
-        Favourites
+        {PAGE_TITLE}
       </h1>
 
       <Suspense fallback={<HighlightSkeleton />}>

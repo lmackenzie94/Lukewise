@@ -10,8 +10,10 @@ import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 
+const PAGE_TITLE = 'My Content';
+
 export const metadata: Metadata = {
-  title: `${SITE_TITLE} | Content`,
+  title: `${SITE_TITLE} | ${PAGE_TITLE}`,
   description: SITE_DESCRIPTION
 };
 
@@ -80,7 +82,7 @@ const ContentList = async ({
 
   return (
     <main className="container">
-      <h1 className="text-2xl font-bold mb-6 sr-only">Content</h1>
+      <h1 className="text-2xl font-bold mb-6 sr-only">{PAGE_TITLE}</h1>
       <div className="flex flex-col md:flex-row gap-4 items-start">
         <div className="bg-gray-200 p-4 rounded-md w-full md:w-1/4 min-w-[200px] flex-shrink-0 md:sticky md:top-4 md:h-[80vh]">
           {authorsToDisplay.length > 0 && (
