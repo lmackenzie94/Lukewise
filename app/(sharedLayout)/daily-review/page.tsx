@@ -24,10 +24,10 @@ export default async function Home({
 
   return (
     <main className="container max-w-screen-sm mx-auto">
-      <h1 className="text-3xl font-bold mb-20 text-center">
-        Your daily review for{' '}
-        <span className="text-blue-500">{todaysDate}</span>
-      </h1>
+      <p className="text-blue-500 mb-2 text-center font-semibold">
+        {todaysDate}
+      </p>
+      <h1 className="text-4xl font-bold mb-14 text-center">Daily Review</h1>
       <HighlightStack currentHighlight={currentHighlight} />
 
       <p className="text-center mt-4 text-gray-500">

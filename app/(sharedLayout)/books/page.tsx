@@ -76,7 +76,7 @@ const ListOfBooks = async ({
     <main className="container">
       <h1 className="text-2xl font-bold mb-6 sr-only">Content</h1>
       <div className="flex flex-col md:flex-row gap-4 items-start">
-        <div className="bg-gray-200 p-4 rounded-md w-full md:w-1/3 flex-shrink-0 md:sticky md:top-4 md:h-[80vh]">
+        <div className="bg-gray-200 p-4 rounded-md w-full md:w-1/4 flex-shrink-0 md:sticky md:top-4 md:h-[80vh]">
           {authorsToDisplay.length > 0 && (
             <div>
               <h2 className="text-lg font-bold mb-2">Authors</h2>
@@ -120,7 +120,7 @@ const ListOfBooks = async ({
               </Link>
             ))}
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1">
             {booksToDisplay.map(book => (
               <BookCard key={book.id} book={book} />
             ))}
@@ -165,8 +165,8 @@ const BookCard = ({ book }: { book: Book }) => (
 const BookSkeleton = () => (
   <div className="container">
     <div className="flex flex-col md:flex-row gap-4 items-start">
-      <div className="bg-gray-300 rounded-md w-full md:w-1/3 flex-shrink-0 h-screen animate-pulse"></div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 animate-pulse">
+      <div className="bg-gray-300 rounded-md w-full md:w-1/4 flex-shrink-0 h-screen animate-pulse"></div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1 animate-pulse">
         {Array.from({ length: 12 }).map((_, index) => (
           <div key={index} className="bg-gray-200 rounded-md h-20"></div>
         ))}

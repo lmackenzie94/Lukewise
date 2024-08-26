@@ -87,3 +87,34 @@ export type BooksList = {
   previous: string | null;
   results: Book[];
 };
+
+export type FavouriteHighlight = BaseHighlight & {
+  original_text: string | null;
+  location_type: string;
+  location: number;
+  is_supp: boolean;
+  is_pop_fill: boolean;
+  is_favorite: boolean;
+  is_discard: boolean;
+  user_book_id: number;
+  keyphrase: string | null;
+  review_format: string;
+  amazon_id: string;
+  title: string;
+  author: string;
+  readable_title: string;
+  tags: Tag[];
+  book_tags: Tag[];
+  note: string;
+  section: string[];
+  cover_image_url: string | null;
+  highlighted_at: string;
+  user_book_type: string;
+  user_book_unique_url: string | null;
+  book_data_id: number;
+  url: string | null;
+  category: BookCategory;
+  last_reviewed: string;
+}
+
+   

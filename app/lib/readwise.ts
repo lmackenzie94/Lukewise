@@ -5,10 +5,13 @@ import {
   BookCategory,
   BooksList,
   DailyReview,
+  FavouriteHighlight,
   HighlightsList,
   HighlightsListWithBookInfo,
   ListHighlight
 } from '@/app/types';
+
+import { promises as fs } from 'fs';
 
 const READWISE_API_BASE = 'https://readwise.io/api/v2';
 const READWISE_API_KEY = process.env.READWISE_API_KEY;
@@ -90,6 +93,25 @@ export async function getRecentHighlights(
 export async function getHighlight(id: string): Promise<ListHighlight> {
   const data = await fetchReadwise(`highlights/${id}/`);
   return data;
+}
+
+export async function getFavouriteHighlights({
+  pageSize = 10,
+  page = 1
+}: {
+  pageSize?: number;
+  page?: number;
+}): Promise<{ count: number; results: FavouriteHighlight[] }> {
+  const file = await fs.readFile(
+    process.cwd() + '/app/data/favourites.json',
+    'utf8'
+  );
+  const data: FavouriteHighlight[] = JSON.parse(file);
+
+  return {
+    count: data.length,
+    results: data.slice((page - 1) * pageSize, page * pageSize)
+  };
 }
 
 // BOOKS ----------------------------------------------------------------------
