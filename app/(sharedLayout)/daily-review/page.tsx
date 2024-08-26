@@ -80,15 +80,15 @@ function HighlightStack({
 
       <div
         key={currentHighlight.id}
-        className="relative bg-white rounded-md shadow-md p-8"
+        className="relative bg-white rounded-md shadow-md p-6 sm:p-8"
       >
         <div className="flex items-center gap-4 mb-8">
           {currentHighlight.image_url && (
             <Image
               src={currentHighlight.image_url}
               alt={currentHighlight.title}
-              width={100}
-              height={100}
+              width={200}
+              height={200}
               className="rounded-full w-14 h-14"
             />
           )}

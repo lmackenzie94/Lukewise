@@ -140,9 +140,9 @@ const BookCard = ({ book }: { book: Book }) => (
       <Image
         src={book.cover_image_url}
         alt={book.title}
-        width={100}
-        height={100}
-        className="object-cover w-16 h-16 rounded-full flex-shrink-0"
+        width={200}
+        height={200}
+        className="object-cover w-12 h-12 rounded-full flex-shrink-0"
       />
     )}
     <div>

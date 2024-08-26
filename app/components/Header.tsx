@@ -8,7 +8,7 @@ export default function Header() {
   const pathname = usePathname();
   return (
     <header className="mb-10 container">
-      <div className="flex items-center justify-between border-b border-gray-200 py-10">
+      <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 py-6 sm:py-10">
         <Link href="/">
           <p className="text-3xl font-black">
             {SITE_TITLE}
@@ -18,7 +18,7 @@ export default function Header() {
             </span>
           </p>
         </Link>
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-8 mt-4 sm:mt-0">
           {navLinks.map(({ label, href }) => (
             <Link href={href} key={href}>
               {label}

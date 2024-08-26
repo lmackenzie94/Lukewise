@@ -90,7 +90,10 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
 
       {!isEditing && (
         <>
-          <p dangerouslySetInnerHTML={{ __html: sanitizedText }} />
+          <p
+            className="text-sm sm:text-base"
+            dangerouslySetInnerHTML={{ __html: sanitizedText }}
+          />
 
           {highlight.note && (
             <details className="mt-4 text-sm bg-blue-50 rounded-md px-2 py-1">

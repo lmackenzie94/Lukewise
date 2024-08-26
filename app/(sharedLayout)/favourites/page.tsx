@@ -16,7 +16,7 @@ export default function FavouritesPage({
 
   return (
     <main className="container max-w-screen-sm">
-      <h1 className="text-2xl font-bold inline-block mb-6">Favourites ❤️</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Favourites ❤️</h1>
 
       <Suspense fallback={<HighlightSkeleton />}>
         <ListOfHighlights currentPage={currentPage} />
@@ -52,15 +52,15 @@ const HighlightCard = ({ highlight }: { highlight: FavouriteHighlight }) => {
       key={highlight.id}
       className="flex flex-col gap-6 bg-white rounded-lg shadow-md overflow-hidden"
     >
-      <p className="p-8 pb-2">{highlight.text}</p>
+      <p className="p-6 sm:p-8 pb-2 text-sm sm:text-base">{highlight.text}</p>
 
-      <div className="flex items-center gap-4 bg-blue-50/70 px-8 py-4">
+      <div className="flex items-center gap-4 bg-blue-50/70 px-6 sm:px-8 py-4">
         {highlight.cover_image_url && (
           <Image
             src={highlight.cover_image_url}
             alt={highlight.title}
-            width={100}
-            height={100}
+            width={200}
+            height={200}
             className="rounded-full w-12 h-12"
           />
         )}
@@ -68,14 +68,14 @@ const HighlightCard = ({ highlight }: { highlight: FavouriteHighlight }) => {
           {highlight.user_book_id ? (
             <Link
               href={`/books/${highlight.user_book_id}`}
-              className="font-bold hover:underline"
+              className="font-bold hover:underline text-sm sm:text-base inline-block"
             >
               {highlight.title}
             </Link>
           ) : (
-            <p className="font-bold">{highlight.title}</p>
+            <p className="font-bold text-sm sm:text-base">{highlight.title}</p>
           )}
-          <p className="text-gray-500 text-sm">{highlight.author}</p>
+          <p className="text-gray-500 text-xs sm:text-sm">{highlight.author}</p>
         </div>
       </div>
     </div>

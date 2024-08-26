@@ -217,6 +217,7 @@ export async function getAllAuthors(): Promise<string[]> {
   return uniqueAuthors;
 }
 
+// HELPERS --------------------------------------------------------------------
 function decodeBookTitle(book: Book): Book {
   // decode the title because some contain HTML entities like &#39; (ex. "What's Our Problem?" book)
 
@@ -224,4 +225,13 @@ function decodeBookTitle(book: Book): Book {
     ...book,
     title: decode(book.title)
   };
+}
+
+export function getLargerImage(
+  imageUrl: string,
+  width: number = 300,
+  height: number = 300
+): string {
+  // some URLs have hardcoded width and height values at 100px, so we need to replace them with larger values
+  return imageUrl.replace('w=100&h=100', `w=${width}&h=${height}`);
 }

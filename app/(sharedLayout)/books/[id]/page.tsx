@@ -1,5 +1,5 @@
 import { HighlightCard } from '@/app/components/HighlightCard';
-import { getBook, getBookHighlights } from '@/app/lib/readwise';
+import { getBook, getBookHighlights, getLargerImage } from '@/app/lib/readwise';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -11,14 +11,14 @@ export default async function BookPage({ params }: { params: { id: string } }) {
 
   return (
     <main className="container max-w-screen-md">
-      <div className="flex items-center gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row text-center sm:text-left items-center gap-4 mb-8">
         {book.cover_image_url && (
           <Image
-            src={book.cover_image_url}
+            src={getLargerImage(book.cover_image_url)}
             alt={book.title}
-            width={100}
-            height={100}
-            className="rounded-full w-28 h-28 bg-gray-300"
+            width={300}
+            height={300}
+            className="rounded-full w-20 sm:w-28 h-20 sm:h-28 bg-gray-300"
           />
         )}
         <div>
@@ -31,14 +31,14 @@ export default async function BookPage({ params }: { params: { id: string } }) {
               rel="noopener noreferrer"
               aria-label={`View source for ${book.title} (opens in a new tab)`}
             >
-              <h1 className="text-2xl font-bold mb-2 inline-block hover:underline">
+              <h1 className="text-xl sm:text-2xl font-bold mb-2 inline-block hover:underline">
                 {book.title}
               </h1>
             </Link>
           ) : (
             <h1 className="text-2xl font-bold mb-2">{book.title}</h1>
           )}
-          <div className="flex items-center gap-x-4 text-xs font-mono tracking-tight text-gray-500">
+          <div className="flex justify-center sm:justify-start items-center gap-x-4 text-xs font-mono tracking-tight text-gray-500">
             <Link
               href={`/books?category=${book.category}`}
               className="bg-purple-500 text-white px-2 py-1 rounded-lg text-xs font-mono tracking-tight inline-block"
