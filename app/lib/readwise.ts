@@ -11,10 +11,10 @@ import {
   ListHighlight
 } from '@/app/types';
 
-import { promises as fs } from 'fs';
-
 const READWISE_API_BASE = 'https://readwise.io/api/v2';
 const READWISE_API_KEY = process.env.READWISE_API_KEY;
+
+import favouritesData from '@/app/data/favourites.json';
 
 export async function fetchReadwise(
   endpoint: string,
@@ -95,18 +95,35 @@ export async function getHighlight(id: string): Promise<ListHighlight> {
   return data;
 }
 
-export async function getFavouriteHighlights({
+//! Didn't work once deployed to Vercel
+// import { promises as fs } from 'fs';
+// export async function getFavouriteHighlights({
+//   pageSize = 10,
+//   page = 1
+// }: {
+//   pageSize?: number;
+//   page?: number;
+// }): Promise<{ count: number; results: FavouriteHighlight[] }> {
+//   const file = await fs.readFile(
+//     process.cwd() + '/app/data/favourites.json',
+//     'utf8'
+//   );
+//   const data: FavouriteHighlight[] = JSON.parse(file);
+
+//   return {
+//     count: data.length,
+//     results: data.slice((page - 1) * pageSize, page * pageSize)
+//   };
+// }
+
+export function getFavouriteHighlights({
   pageSize = 10,
   page = 1
 }: {
   pageSize?: number;
   page?: number;
-}): Promise<{ count: number; results: FavouriteHighlight[] }> {
-  const file = await fs.readFile(
-    process.cwd() + '/app/data/favourites.json',
-    'utf8'
-  );
-  const data: FavouriteHighlight[] = JSON.parse(file);
+}): { count: number; results: FavouriteHighlight[] } {
+  const data: FavouriteHighlight[] = favouritesData;
 
   return {
     count: data.length,
