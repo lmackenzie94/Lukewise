@@ -123,7 +123,7 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
       {!isEditing && (
         <>
           <p
-            className="text-sm sm:text-base"
+            className="text-sm sm:text-base whitespace-pre-line"
             dangerouslySetInnerHTML={{ __html: sanitizedText }}
           />
 

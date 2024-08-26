@@ -118,7 +118,9 @@ function HighlightStack({
             )}
           </div>
         </div>
-        <p className="text-sm sm:text-base">{currentHighlight.text}</p>
+        <p className="text-sm sm:text-base whitespace-pre-line">
+          {currentHighlight.text}
+        </p>
       </div>
     </div>
   );
