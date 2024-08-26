@@ -98,6 +98,8 @@ const ContentList = async ({
                       href={`/content/?author=${author}${
                         currentCategory ? `&category=${currentCategory}` : ''
                       }`}
+                      // don't scroll to the top of the next page
+                      scroll={false}
                       className={`block p-2 ${
                         author === currentAuthor
                           ? 'font-bold bg-blue-500 text-white'
