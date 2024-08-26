@@ -36,8 +36,7 @@ export const updateHighlight = async (
   });
 
   // TODO: better way to do this? use tags?
-  revalidatePath(`/books/${data.book_id}`);
-  revalidatePath(`/highlights/${id}`);
+  revalidatePath(`/content/${data.book_id}`);
 
   return {
     ok: true,
@@ -51,6 +50,5 @@ export const deleteHighlight = async (id: number, book_id: number) => {
     method: 'DELETE'
   });
 
-  revalidatePath(`/books/${book_id}`);
-  revalidatePath(`/highlights/${id}`);
+  revalidatePath(`/content/${book_id}`);
 };

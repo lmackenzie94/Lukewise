@@ -1,13 +1,17 @@
 import { HighlightCard } from '@/app/components/HighlightCard';
-import { getBook, getBookHighlights, getLargerImage } from '@/app/lib/readwise';
+import {
+  getContent,
+  getContentHighlights,
+  getLargerImage
+} from '@/app/lib/readwise';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export const revalidate = 3600; // 1 hour
 
 export default async function BookPage({ params }: { params: { id: string } }) {
-  const book = await getBook(params.id);
-  const highlights = await getBookHighlights(params.id);
+  const book = await getContent(params.id);
+  const highlights = await getContentHighlights(params.id);
 
   return (
     <main className="container max-w-screen-md">
@@ -40,7 +44,7 @@ export default async function BookPage({ params }: { params: { id: string } }) {
           )}
           <div className="flex justify-center sm:justify-start items-center gap-x-4 text-xs font-mono tracking-tight text-gray-500">
             <Link
-              href={`/books?category=${book.category}`}
+              href={`/content?category=${book.category}`}
               className="bg-purple-500 text-white px-2 py-1 rounded-lg text-xs font-mono tracking-tight inline-block"
             >
               {book.category}

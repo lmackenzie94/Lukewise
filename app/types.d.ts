@@ -21,7 +21,7 @@ type Tag = {
   name: string;
 };
 
-export type BookCategory =
+export type ContentCategory =
   | 'books'
   | 'articles'
   | 'podcasts'
@@ -40,7 +40,7 @@ export type ReviewHighlight = BaseHighlight & {
   api_source: string | null;
 };
 
-export type ReviewHighlightWithBookIds = ReviewHighlight & {
+export type ReviewHighlightWithContentIds = ReviewHighlight & {
   book_id: number;
 };
 
@@ -48,7 +48,7 @@ export type DailyReview = {
   review_id: number;
   review_url: string;
   review_completed: boolean;
-  highlights: ReviewHighlightWithBookIds[];
+  highlights: ReviewHighlightWithContentIds[];
 };
 
 export type ListHighlight = BaseHighlight & {
@@ -58,8 +58,8 @@ export type ListHighlight = BaseHighlight & {
   tags: Tag[];
 };
 
-export type ListHighlightWithBookInfo = ListHighlight & {
-  book: Book;
+export type ListHighlightWithContentInfo = ListHighlight & {
+  book: Content;
 };
 
 export type HighlightsList = {
@@ -69,18 +69,18 @@ export type HighlightsList = {
   results: ListHighlight[];
 };
 
-export type HighlightsListWithBookInfo = {
+export type HighlightsListWithContentInfo = {
   count: number;
   next: string | null;
   previous: string | null;
-  results: ListHighlightWithBookInfo[];
+  results: ListHighlightWithContentInfo[];
 };
 
-export type Book = {
+export type Content = {
   id: number;
   title: string;
   author: string;
-  category: BookCategory;
+  category: ContentCategory;
   source: string;
   num_highlights: number;
   last_highlight_at: string | null;
@@ -93,11 +93,11 @@ export type Book = {
   document_note: string;
 };
 
-export type BooksList = {
+export type ContentList = {
   count: number;
   next: string | null;
   previous: string | null;
-  results: Book[];
+  results: Content[];
 };
 
 export type FavouriteHighlight = {
@@ -127,6 +127,6 @@ export type FavouriteHighlight = {
   user_book_unique_url: string | null;
   book_data_id: number | null;
   url: string | null;
-  category: BookCategory | string | null;
+  category: ContentCategory | string | null;
   last_reviewed: number;
 };

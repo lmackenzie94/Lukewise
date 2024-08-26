@@ -1,13 +1,13 @@
 import 'server-only';
 
 import {
-  Book,
-  BookCategory,
-  BooksList,
+  Content,
+  ContentCategory,
+  ContentList,
   DailyReview,
   FavouriteHighlight,
   HighlightsList,
-  HighlightsListWithBookInfo,
+  HighlightsListWithContentInfo,
   ListHighlight,
   ReviewResponse
 } from '@/app/types';
@@ -19,6 +19,7 @@ const READWISE_API_KEY = process.env.READWISE_API_KEY;
 
 import favouritesData from '@/app/data/favourites.json';
 
+// Readwise calls them "Books" but I'm calling them "Content" because "books" is a category
 const BOOKS_TO_HIDE = [41615353, 41515405];
 
 export async function fetchReadwise(
@@ -27,11 +28,11 @@ export async function fetchReadwise(
 ) {
   try {
     const response = await fetch(`${READWISE_API_BASE}/${endpoint}`, {
+      ...options,
       headers: {
-        Authorization: `Token ${READWISE_API_KEY}`,
-        ...options.headers
-      },
-      ...options
+        ...options.headers,
+        Authorization: `Token ${READWISE_API_KEY}`
+      }
     });
 
     if (!response.ok) {
@@ -55,9 +56,9 @@ export async function fetchReadwise(
 export async function getDailyReview(): Promise<DailyReview> {
   const data: ReviewResponse = await fetchReadwise('review/');
 
-  const highlightsWithBookIds = await Promise.all(
+  const highlightsWithContentIds = await Promise.all(
     data.highlights.map(async highlight => {
-      // fetch the book id based on highlight id
+      // fetch the content (i.e. "book") id based on highlight id
       const highlightDetail = await getHighlight(highlight.id);
       return {
         ...highlight,
@@ -66,7 +67,7 @@ export async function getDailyReview(): Promise<DailyReview> {
     })
   );
 
-  const visibleHighlights = highlightsWithBookIds.filter(highlight => {
+  const visibleHighlights = highlightsWithContentIds.filter(highlight => {
     if (highlight.book_id) {
       return !BOOKS_TO_HIDE.includes(highlight.book_id);
     }
@@ -83,29 +84,29 @@ export async function getDailyReview(): Promise<DailyReview> {
 export async function getHighlights(options?: {
   pageSize?: number;
   page?: number;
-}): Promise<HighlightsListWithBookInfo> {
+}): Promise<HighlightsListWithContentInfo> {
   const { pageSize = 10, page = 1 } = options || {};
 
   const data = await fetchReadwise(
     `highlights/?page_size=${pageSize}&page=${page}`
   );
-  const allBookIds: string[] = data.results.map(
+  const allContentIds: string[] = data.results.map(
     (highlight: ListHighlight) => highlight.book_id
   );
-  const bookIds = Array.from(new Set(allBookIds));
-  const books = await Promise.all(bookIds.map(id => getBook(id)));
-  const bookMap = Object.fromEntries(books.map(book => [book.id, book]));
+  const contentIds = Array.from(new Set(allContentIds));
+  const content = await Promise.all(contentIds.map(id => getContent(id)));
+  const contentMap = Object.fromEntries(content.map(c => [c.id, c]));
 
-  const highlightsWithBookInfo = data.results.map(
+  const highlightsWithContentInfo = data.results.map(
     (highlight: { book_id: string }) => ({
       ...highlight,
-      book: bookMap[highlight.book_id]
+      book: contentMap[highlight.book_id]
     })
   );
 
   return {
     ...data,
-    results: highlightsWithBookInfo
+    results: highlightsWithContentInfo
   };
 }
 
@@ -158,72 +159,74 @@ export function getFavouriteHighlights({
   };
 }
 
-// BOOKS ----------------------------------------------------------------------
-export async function getAllBooks(): Promise<Book[]> {
-  let allBooks: Book[] = [];
+// CONTENT ----------------------------------------------------------------------
+export async function getAllContent(): Promise<Content[]> {
+  let allContent: Content[] = [];
   let currentPage = 1;
   let hasNextPage = false;
 
   do {
     // max page_size is 1000
-    const data: BooksList = await fetchReadwise(
+    const data: ContentList = await fetchReadwise(
       `books/?page_size=1000&page=${currentPage}`
     );
-    allBooks = allBooks.concat(data.results);
+    allContent = allContent.concat(data.results);
     hasNextPage = Boolean(data.next);
     currentPage++;
   } while (hasNextPage);
 
-  const visibleBooks = allBooks.filter(
+  const visibleContent = allContent.filter(
     book => !BOOKS_TO_HIDE.includes(book.id)
   );
 
-  const decodedBooks = visibleBooks.map(decodeBookTitle);
+  const decodedContent = visibleContent.map(decodeContentTitle);
 
-  return decodedBooks;
+  return decodedContent;
 }
 
-export async function getBook(id: string): Promise<Book> {
-  const data: Book = await fetchReadwise(`books/${id}/`);
-  return decodeBookTitle(data);
+export async function getContent(id: string): Promise<Content> {
+  const data: Content = await fetchReadwise(`books/${id}/`);
+  return decodeContentTitle(data);
 }
 
-export async function getBookHighlights(id: string): Promise<HighlightsList> {
+export async function getContentHighlights(
+  id: string
+): Promise<HighlightsList> {
   const data = await fetchReadwise(`highlights/?book_id=${id}`);
   return data;
 }
 
-export async function getBooksForCategory(
-  category: BookCategory
-): Promise<Book[]> {
-  const allBooks = await getAllBooks();
-  const books = allBooks.filter(book => book.category === category);
-  return books;
+export async function getContentForCategory(
+  category: ContentCategory
+): Promise<Content[]> {
+  const allContent = await getAllContent();
+  const content = allContent.filter(content => content.category === category);
+  return content;
 }
 
-export async function getBooksForAuthor(author: string): Promise<Book[]> {
-  const allBooks = await getAllBooks();
-  const books = allBooks.filter(book => book.author === author);
-  return books;
+export async function getContentForAuthor(author: string): Promise<Content[]> {
+  const allContent = await getAllContent();
+  const content = allContent.filter(content => content.author === author);
+  return content;
 }
 
 // AUTHORS --------------------------------------------------------------------
 export async function getAllAuthors(): Promise<string[]> {
-  const allBooks = await getAllBooks();
+  const allContent = await getAllContent();
 
-  const authors = allBooks.map(book => book.author);
+  const authors = allContent.map(content => content.author);
   const uniqueAuthors = Array.from(new Set(authors));
 
   return uniqueAuthors;
 }
 
 // HELPERS --------------------------------------------------------------------
-function decodeBookTitle(book: Book): Book {
+function decodeContentTitle(content: Content): Content {
   // decode the title because some contain HTML entities like &#39; (ex. "What's Our Problem?" book)
 
   return {
-    ...book,
-    title: decode(book.title)
+    ...content,
+    title: decode(content.title)
   };
 }
 

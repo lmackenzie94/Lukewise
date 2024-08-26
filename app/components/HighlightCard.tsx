@@ -4,7 +4,7 @@ import { ListHighlight } from '../types';
 import { useState } from 'react';
 import { deleteHighlight, updateHighlight } from '../actions';
 import { FaEdit, FaSave, FaTimes, FaTrash, FaTrashAlt } from 'react-icons/fa';
-import DOMPurify from 'dompurify';
+import DOMPurify from 'isomorphic-dompurify';
 import { useFormStatus } from 'react-dom';
 
 function SubmitButton() {

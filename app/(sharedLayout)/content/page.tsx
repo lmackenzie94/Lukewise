@@ -1,26 +1,26 @@
 import Link from 'next/link';
 import {
-  getAllBooks,
-  getBooksForAuthor,
-  getBooksForCategory
+  getAllContent,
+  getContentForAuthor,
+  getContentForCategory
 } from '@/app/lib/readwise';
 import Image from 'next/image';
-import { Book, BookCategory } from '../../types';
+import { Content, ContentCategory } from '../../types';
 import { Suspense } from 'react';
 
-const BOOKS_TO_SHOW_ON_LOAD = 12;
+const CONTENT_TO_SHOW_ON_LOAD = 15;
 
-export default async function BooksPage({
+export default async function ContentPage({
   searchParams
 }: {
   searchParams: {
-    category: BookCategory | undefined;
+    category: ContentCategory | undefined;
     author: string | undefined;
   };
 }) {
   return (
-    <Suspense fallback={<BookSkeleton />}>
-      <ListOfBooks
+    <Suspense fallback={<ContentSkeleton />}>
+      <ContentList
         currentCategory={searchParams.category}
         currentAuthor={searchParams.author}
       />
@@ -28,42 +28,42 @@ export default async function BooksPage({
   );
 }
 
-const ListOfBooks = async ({
+const ContentList = async ({
   currentCategory,
   currentAuthor
 }: {
-  currentCategory: BookCategory | undefined;
+  currentCategory: ContentCategory | undefined;
   currentAuthor: string | undefined;
 }) => {
-  let booksToDisplay: Book[] = [];
+  let contentToDisplay: Content[] = [];
   let authorsToDisplay: string[] = [];
 
   if (currentCategory || currentAuthor) {
     if (currentCategory && currentAuthor) {
-      const booksForCategory = await getBooksForCategory(currentCategory);
-      authorsToDisplay = getAuthors(booksForCategory);
-      booksToDisplay = booksForCategory.filter(
-        book => book.author === currentAuthor
+      const contentForCategory = await getContentForCategory(currentCategory);
+      authorsToDisplay = getAuthors(contentForCategory);
+      contentToDisplay = contentForCategory.filter(
+        content => content.author === currentAuthor
       );
     } else if (currentCategory) {
-      const booksForCategory = await getBooksForCategory(currentCategory);
-      authorsToDisplay = getAuthors(booksForCategory);
-      booksToDisplay = booksForCategory;
+      const contentForCategory = await getContentForCategory(currentCategory);
+      authorsToDisplay = getAuthors(contentForCategory);
+      contentToDisplay = contentForCategory;
     } else if (currentAuthor) {
-      const booksForAuthor = await getBooksForAuthor(currentAuthor);
-      const allBooks = await getAllBooks();
-      authorsToDisplay = getAuthors(allBooks);
-      booksToDisplay = booksForAuthor;
+      const contentForAuthor = await getContentForAuthor(currentAuthor);
+      const allContent = await getAllContent();
+      authorsToDisplay = getAuthors(allContent);
+      contentToDisplay = contentForAuthor;
     }
   } else {
-    const allBooks = await getAllBooks();
-    authorsToDisplay = getAuthors(allBooks);
-    booksToDisplay = allBooks.slice(0, BOOKS_TO_SHOW_ON_LOAD);
+    const allContent = await getAllContent();
+    authorsToDisplay = getAuthors(allContent);
+    contentToDisplay = allContent.slice(0, CONTENT_TO_SHOW_ON_LOAD);
   }
 
-  booksToDisplay.sort((a, b) => a.title.localeCompare(b.title));
+  contentToDisplay.sort((a, b) => a.title.localeCompare(b.title));
 
-  const categories: BookCategory[] = [
+  const categories: ContentCategory[] = [
     'books',
     'articles',
     'podcasts',
@@ -86,7 +86,7 @@ const ListOfBooks = async ({
                     className="hover:bg-blue-100 odd:bg-gray-50 bg-gray-100"
                   >
                     <Link
-                      href={`/books/?author=${author}${
+                      href={`/content/?author=${author}${
                         currentCategory ? `&category=${currentCategory}` : ''
                       }`}
                       className={`block p-2 ${
@@ -108,7 +108,7 @@ const ListOfBooks = async ({
             {categories.map(category => (
               <Link
                 key={category}
-                href={`/books/?category=${category}`}
+                href={`/content/?category=${category}`}
                 className={`inline-block text-xs py-1 px-2 rounded-md font-mono uppercase ${
                   category === currentCategory
                     ? 'bg-blue-500 text-white'
@@ -120,8 +120,8 @@ const ListOfBooks = async ({
             ))}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1">
-            {booksToDisplay.map(book => (
-              <BookCard key={book.id} book={book} />
+            {contentToDisplay.map(c => (
+              <ContentCard key={c.id} content={c} />
             ))}
           </div>
         </div>
@@ -130,38 +130,41 @@ const ListOfBooks = async ({
   );
 };
 
-function getAuthors(books: Book[]) {
-  return Array.from(new Set(books.map(book => book.author))).sort();
+function getAuthors(content: Content[]) {
+  return Array.from(new Set(content.map(c => c.author))).sort();
 }
 
-const BookCard = ({ book }: { book: Book }) => (
+const ContentCard = ({ content }: { content: Content }) => (
   <article className="flex gap-4 bg-white rounded-md shadow-md p-4">
-    {book.cover_image_url && (
+    {content.cover_image_url && (
       <Image
-        src={book.cover_image_url}
-        alt={book.title}
+        src={content.cover_image_url}
+        alt={content.title}
         width={200}
         height={200}
         className="object-cover w-12 h-12 rounded-full flex-shrink-0"
       />
     )}
     <div>
-      <Link href={`/books/${book.id}`} className="hover:underline">
+      <Link href={`/content/${content.id}`} className="hover:underline">
         <h2
           className="font-bold text-base line-clamp-3 leading-5"
           style={{ wordBreak: 'break-word' }}
         >
-          {book.title}
+          {content.title}
         </h2>
       </Link>
-      <Link href={`/books/?author=${book.author}`} className="hover:underline">
-        <p className="text-gray-500 text-xs mt-1">{book.author}</p>
+      <Link
+        href={`/content/?author=${content.author}`}
+        className="hover:underline"
+      >
+        <p className="text-gray-500 text-xs mt-1">{content.author}</p>
       </Link>
     </div>
   </article>
 );
 
-const BookSkeleton = () => (
+const ContentSkeleton = () => (
   <div className="container">
     <div className="flex flex-col md:flex-row gap-4 items-start">
       <div className="bg-gray-300 rounded-md w-full md:w-1/4 flex-shrink-0 h-screen animate-pulse"></div>
