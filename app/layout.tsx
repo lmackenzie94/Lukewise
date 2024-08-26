@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { SITE_DESCRIPTION, SITE_TITLE } from './constants';
 
 export const metadata: Metadata = {
-  title: 'Lukewise',
-  description: 'My personal Readwise'
+  title: `${SITE_TITLE}`,
+  description: SITE_DESCRIPTION
 };
 
 export default function RootLayout({

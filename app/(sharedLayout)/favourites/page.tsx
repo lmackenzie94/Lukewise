@@ -4,6 +4,13 @@ import { Suspense } from 'react';
 import Image from 'next/image';
 import { FavouriteHighlight } from '@/app/types';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { Metadata } from 'next';
+import { SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
+
+export const metadata: Metadata = {
+  title: `${SITE_TITLE} | Favourites`,
+  description: SITE_DESCRIPTION
+};
 
 const PAGE_SIZE = 5;
 
@@ -16,7 +23,9 @@ export default function FavouritesPage({
 
   return (
     <main className="container max-w-screen-sm">
-      <h1 className="text-2xl font-bold mb-6 text-center">Favourites ❤️</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center sr-only">
+        Favourites
+      </h1>
 
       <Suspense fallback={<HighlightSkeleton />}>
         <ListOfHighlights currentPage={currentPage} />
@@ -50,9 +59,9 @@ const HighlightCard = ({ highlight }: { highlight: FavouriteHighlight }) => {
   return (
     <div
       key={highlight.id}
-      className="flex flex-col gap-6 bg-white rounded-lg shadow-md overflow-hidden"
+      className="flex flex-col bg-white rounded-lg shadow-md overflow-hidden"
     >
-      <p className="p-6 sm:p-8 pb-2 text-sm sm:text-base">{highlight.text}</p>
+      <p className="p-6 sm:p-8 text-sm sm:text-base">{highlight.text}</p>
 
       <div className="flex items-center gap-4 bg-blue-50/70 px-6 sm:px-8 py-4">
         {highlight.cover_image_url && (
@@ -61,21 +70,21 @@ const HighlightCard = ({ highlight }: { highlight: FavouriteHighlight }) => {
             alt={highlight.title}
             width={200}
             height={200}
-            className="rounded-full w-12 h-12"
+            className="rounded-full w-10 h-10"
           />
         )}
         <div>
           {highlight.user_book_id ? (
             <Link
               href={`/content/${highlight.user_book_id}`}
-              className="font-bold hover:underline text-sm sm:text-base inline-block"
+              className="font-bold hover:underline text-sm inline-block leading-4"
             >
               {highlight.title}
             </Link>
           ) : (
-            <p className="font-bold text-sm sm:text-base">{highlight.title}</p>
+            <p className="font-bold text-sm leading-4">{highlight.title}</p>
           )}
-          <p className="text-gray-500 text-xs sm:text-sm">{highlight.author}</p>
+          <p className="text-gray-500 text-xs">{highlight.author}</p>
         </div>
       </div>
     </div>

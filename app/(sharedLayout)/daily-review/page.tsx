@@ -2,6 +2,14 @@ import Image from 'next/image';
 import { getDailyReview } from '@/app/lib/readwise';
 import { ReviewHighlight } from '../../types';
 import Link from 'next/link';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { Metadata } from 'next';
+import { SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
+
+export const metadata: Metadata = {
+  title: `${SITE_TITLE} | Daily Review`,
+  description: SITE_DESCRIPTION
+};
 
 export default async function Home({
   searchParams
@@ -24,32 +32,38 @@ export default async function Home({
 
   return (
     <main className="container max-w-screen-sm mx-auto">
-      <p className="text-blue-500 mb-2 text-center font-semibold">
+      <p className="text-blue-500 mb-1 text-sm sm:text-base text-center font-medium">
         {todaysDate}
       </p>
-      <h1 className="text-4xl font-bold mb-14 text-center">Daily Review</h1>
+      <h1 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
+        Daily Review
+      </h1>
       <HighlightStack currentHighlight={currentHighlight} />
 
-      <p className="text-center mt-4 text-gray-500">
+      <p className="text-center mt-4 text-gray-500 text-sm">
         {currentHighlightIdx + 1} of {highlightsToReview}
       </p>
 
       {/* next and previous links */}
-      <div className="flex justify-center gap-4 mt-12">
+      <div className="flex justify-center gap-4 mt-6 text-xl">
         {currentHighlightIdx > 0 && (
           <Link
             href={`/daily-review?highlight=${currentHighlightIdx - 1}`}
-            className="bg-blue-500 text-white px-4 py-2 rounded-md"
+            className="bg-blue-500 text-white p-4 rounded-full hover:bg-blue-600"
+            aria-label="Previous highlight"
           >
-            Previous
+            <FaArrowLeft aria-hidden={true} />
+            <span className="sr-only">Previous highlight</span>
           </Link>
         )}
         {currentHighlightIdx < highlightsToReview - 1 && (
           <Link
             href={`/daily-review?highlight=${currentHighlightIdx + 1}`}
-            className="bg-green-500 text-white px-4 py-2 rounded-md"
+            className="bg-green-500 text-white p-4 rounded-full hover:bg-green-600"
+            aria-label="Next highlight"
           >
-            Next
+            <FaArrowRight aria-hidden={true} />
+            <span className="sr-only">Next highlight</span>
           </Link>
         )}
       </div>
@@ -77,29 +91,32 @@ function HighlightStack({
         );
       })}
       {/* current highlight */}
-
       <div
         key={currentHighlight.id}
         className="relative bg-white rounded-md shadow-md p-6 sm:p-8"
       >
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-4 mb-7">
           {currentHighlight.image_url && (
             <Image
               src={currentHighlight.image_url}
               alt={currentHighlight.title}
               width={200}
               height={200}
-              className="rounded-full w-14 h-14"
+              className="rounded-full w-12 h-12"
             />
           )}
           <div>
-            <h2 className="text-lg font-bold">{currentHighlight.title}</h2>
+            <h2 className="text-base sm:text-lg font-bold">
+              {currentHighlight.title}
+            </h2>
             {currentHighlight.author && (
-              <p className="text-gray-500 text-sm">{currentHighlight.author}</p>
+              <p className="text-gray-500 text-xs sm:text-sm">
+                {currentHighlight.author}
+              </p>
             )}
           </div>
         </div>
-        <p>{currentHighlight.text}</p>
+        <p className="text-sm sm:text-base">{currentHighlight.text}</p>
       </div>
     </div>
   );

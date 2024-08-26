@@ -179,7 +179,12 @@ export async function getAllContent(): Promise<Content[]> {
     book => !BOOKS_TO_HIDE.includes(book.id)
   );
 
-  const decodedContent = visibleContent.map(decodeContentTitle);
+  // filter out content with no highlights
+  const contentWithHighlights = visibleContent.filter(content => {
+    return content.num_highlights > 0;
+  });
+
+  const decodedContent = contentWithHighlights.map(decodeContentTitle);
 
   return decodedContent;
 }

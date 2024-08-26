@@ -1,4 +1,5 @@
 import { HighlightCard } from '@/app/components/HighlightCard';
+import { SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 import {
   getContent,
   getContentHighlights,
@@ -6,6 +7,14 @@ import {
 } from '@/app/lib/readwise';
 import Image from 'next/image';
 import Link from 'next/link';
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const book = await getContent(params.id);
+  return {
+    title: `${SITE_TITLE} | ${book.title}`,
+    description: SITE_DESCRIPTION
+  };
+}
 
 export const revalidate = 3600; // 1 hour
 

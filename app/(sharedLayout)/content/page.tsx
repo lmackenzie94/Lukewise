@@ -7,8 +7,15 @@ import {
 import Image from 'next/image';
 import { Content, ContentCategory } from '../../types';
 import { Suspense } from 'react';
+import { Metadata } from 'next';
+import { SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 
-const CONTENT_TO_SHOW_ON_LOAD = 15;
+export const metadata: Metadata = {
+  title: `${SITE_TITLE} | Content`,
+  description: SITE_DESCRIPTION
+};
+
+const CONTENT_TO_SHOW_ON_LOAD = 12;
 
 export default async function ContentPage({
   searchParams
@@ -75,11 +82,11 @@ const ContentList = async ({
     <main className="container">
       <h1 className="text-2xl font-bold mb-6 sr-only">Content</h1>
       <div className="flex flex-col md:flex-row gap-4 items-start">
-        <div className="bg-gray-200 p-4 rounded-md w-full md:w-1/4 flex-shrink-0 md:sticky md:top-4 md:h-[80vh]">
+        <div className="bg-gray-200 p-4 rounded-md w-full md:w-1/4 min-w-[200px] flex-shrink-0 md:sticky md:top-4 md:h-[80vh]">
           {authorsToDisplay.length > 0 && (
             <div>
               <h2 className="text-lg font-bold mb-2">Authors</h2>
-              <ul className="h-56 md:h-[calc(80vh-70px)] overflow-y-auto border border-gray-300 rounded-md text-sm">
+              <ul className="h-56 md:h-[calc(80vh-70px)] overflow-y-auto border border-gray-300 rounded-md text-xs lg:text-sm">
                 {authorsToDisplay.map(author => (
                   <li
                     key={author}
@@ -104,7 +111,7 @@ const ContentList = async ({
           )}
         </div>
         <div className="flex-1">
-          <div className="flex flex-wrap gap-1 mb-5">
+          <div className="flex flex-wrap gap-1 mb-5 justify-center sm:justify-start">
             {categories.map(category => (
               <Link
                 key={category}
@@ -119,7 +126,7 @@ const ContentList = async ({
               </Link>
             ))}
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 flex-1">
             {contentToDisplay.map(c => (
               <ContentCard key={c.id} content={c} />
             ))}
@@ -148,7 +155,7 @@ const ContentCard = ({ content }: { content: Content }) => (
     <div>
       <Link href={`/content/${content.id}`} className="hover:underline">
         <h2
-          className="font-bold text-base line-clamp-3 leading-5"
+          className="font-bold text-sm line-clamp-3 leading-4"
           style={{ wordBreak: 'break-word' }}
         >
           {content.title}
@@ -167,8 +174,8 @@ const ContentCard = ({ content }: { content: Content }) => (
 const ContentSkeleton = () => (
   <div className="container">
     <div className="flex flex-col md:flex-row gap-4 items-start">
-      <div className="bg-gray-300 rounded-md w-full md:w-1/4 flex-shrink-0 h-screen animate-pulse"></div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1 animate-pulse">
+      <div className="bg-gray-300 rounded-md w-full md:w-1/4 min-w-[200px] flex-shrink-0 h-screen animate-pulse"></div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 flex-1 animate-pulse">
         {Array.from({ length: 12 }).map((_, index) => (
           <div key={index} className="bg-gray-200 rounded-md h-20"></div>
         ))}
