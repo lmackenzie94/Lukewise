@@ -17,7 +17,15 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION
 };
 
-const CONTENT_TO_SHOW_ON_LOAD = 12;
+const CONTENT_TO_SHOW_ON_LOAD = 18;
+
+const categories: { title: ContentCategory; colour: string }[] = [
+  { title: 'books', colour: 'bg-blue-600' },
+  { title: 'articles', colour: 'bg-green-600' },
+  { title: 'podcasts', colour: 'bg-purple-600' },
+  { title: 'tweets', colour: 'bg-red-600' },
+  { title: 'supplementals', colour: 'bg-yellow-600' }
+];
 
 export default async function ContentPage({
   searchParams
@@ -71,14 +79,6 @@ const ContentList = async ({
   }
 
   contentToDisplay.sort((a, b) => a.title.localeCompare(b.title));
-
-  const categories: { title: ContentCategory; colour: string }[] = [
-    { title: 'books', colour: 'bg-blue-600' },
-    { title: 'articles', colour: 'bg-green-600' },
-    { title: 'podcasts', colour: 'bg-purple-600' },
-    { title: 'tweets', colour: 'bg-red-600' },
-    { title: 'supplementals', colour: 'bg-yellow-600' }
-  ];
 
   return (
     <main className="container">
@@ -141,7 +141,7 @@ const ContentList = async ({
               </Link>
             ))}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 flex-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-y-6 gap-x-4 flex-1">
             {contentToDisplay.map(c => (
               <ContentCard key={c.id} content={c} />
             ))}
@@ -157,18 +157,25 @@ function getAuthors(content: Content[]) {
 }
 
 const ContentCard = ({ content }: { content: Content }) => (
-  <article className="flex gap-4 bg-white rounded-md shadow-md p-4">
+  <article className="flex gap-4 bg-white rounded-md shadow-md pt-5 pb-4 px-3 relative">
     {content.cover_image_url && (
       <Image
         src={content.cover_image_url}
         alt={content.title}
         width={200}
         height={200}
-        className="object-cover w-12 h-12 rounded-full flex-shrink-0"
+        className="object-cover w-10 h-10 rounded-full flex-shrink-0"
       />
     )}
     <div>
-      <Link href={`/content/${content.id}`} className="hover:underline">
+      <p
+        className={`absolute -top-2 -right-1 rounded-full text-white text-[.55rem] py-1 px-2 uppercase inline-block mb-2 leading-none font-medium ${
+          categories.find(c => c.title === content.category)?.colour
+        }`}
+      >
+        {getSingular(content.category)}
+      </p>
+      <Link href={`/content/${content.id}`} className="block hover:underline">
         <h2
           className="font-bold text-sm line-clamp-3 leading-4"
           style={{ wordBreak: 'break-word' }}
@@ -178,7 +185,7 @@ const ContentCard = ({ content }: { content: Content }) => (
       </Link>
       <Link
         href={`/content/?author=${content.author}`}
-        className="hover:underline"
+        className="block hover:underline"
       >
         <p className="text-gray-500 text-xs mt-1">{content.author}</p>
       </Link>
@@ -198,3 +205,8 @@ const ContentSkeleton = () => (
     </div>
   </div>
 );
+
+const getSingular = (category: ContentCategory) => {
+  // remove last character if it is an 's'
+  return category.slice(0, -1);
+};
