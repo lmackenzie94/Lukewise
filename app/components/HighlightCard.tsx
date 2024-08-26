@@ -5,6 +5,24 @@ import { useState } from 'react';
 import { deleteHighlight, updateHighlight } from '../actions';
 import { FaEdit, FaSave, FaTimes, FaTrash, FaTrashAlt } from 'react-icons/fa';
 import DOMPurify from 'dompurify';
+import { useFormStatus } from 'react-dom';
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      type="submit"
+      className="bg-blue-500 text-white p-2 rounded-md flex items-center gap-2 flex-1 justify-center hover:bg-blue-600 disabled:bg-blue-300"
+      title="Save highlight"
+      aria-label="Save highlight"
+      disabled={pending}
+    >
+      <FaSave aria-hidden="true" />
+      <span className="sr-only">Save highlight</span>
+    </button>
+  );
+}
 
 export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -54,15 +72,7 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
               placeholder="Password"
             />
             <div className="flex gap-2 text-lg">
-              <button
-                type="submit"
-                className="bg-blue-500 text-white p-2 rounded-md flex items-center gap-2 flex-1 justify-center hover:bg-blue-600"
-                title="Save highlight"
-                aria-label="Save highlight"
-              >
-                <FaSave aria-hidden="true" />
-                <span className="sr-only">Save highlight</span>
-              </button>
+              <SubmitButton />
               <button
                 type="button"
                 onClick={toggleEditing}

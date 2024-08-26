@@ -65,7 +65,16 @@ const HighlightCard = ({ highlight }: { highlight: FavouriteHighlight }) => {
           />
         )}
         <div>
-          <p className="font-bold">{highlight.title}</p>
+          {highlight.user_book_id ? (
+            <Link
+              href={`/books/${highlight.user_book_id}`}
+              className="font-bold hover:underline"
+            >
+              {highlight.title}
+            </Link>
+          ) : (
+            <p className="font-bold">{highlight.title}</p>
+          )}
           <p className="text-gray-500 text-sm">{highlight.author}</p>
         </div>
       </div>
