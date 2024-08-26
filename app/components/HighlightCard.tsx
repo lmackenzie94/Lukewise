@@ -2,7 +2,9 @@
 
 import { ListHighlight } from '../types';
 import { useState } from 'react';
-import { updateHighlight } from '../actions';
+import { deleteHighlight, updateHighlight } from '../actions';
+import { FaEdit, FaSave, FaTimes, FaTrash, FaTrashAlt } from 'react-icons/fa';
+import DOMPurify from 'dompurify';
 
 export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -24,17 +26,25 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
     setError(null);
   };
 
-  console.log(error);
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this highlight?')) {
+      return;
+    }
+
+    await deleteHighlight(highlight.id, highlight.book_id);
+  };
+
+  const sanitizedText = DOMPurify.sanitize(highlight.text);
 
   return (
     <div key={highlight.id} className="bg-white p-6 rounded-md shadow-md">
       {isEditing && (
         <>
-          <form action={handleSubmit} className="flex flex-col gap-2">
+          <form action={handleSubmit} className="flex flex-col gap-2 text-sm">
             {/* TODO: pass the highlight id without a hidden input */}
             <input type="hidden" name="id" value={highlight.id} />
-            <input type="text" name="text" defaultValue={highlight.text} />
-            <textarea name="note" defaultValue={highlight.note} />
+            <textarea name="text" defaultValue={highlight.text} rows={10} />
+            <textarea name="note" defaultValue={highlight.note} rows={4} />
 
             {/* TODO: proper auth */}
             <input
@@ -43,26 +53,34 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
               required
               placeholder="Password"
             />
-            <button
-              type="submit"
-              className="bg-blue-500 text-white p-2 rounded-md mb-2"
-            >
-              Save
-            </button>
+            <div className="flex gap-2 text-lg">
+              <button
+                type="submit"
+                className="bg-blue-500 text-white p-2 rounded-md flex items-center gap-2 flex-1 justify-center hover:bg-blue-600"
+                title="Save highlight"
+                aria-label="Save highlight"
+              >
+                <FaSave aria-hidden="true" />
+                <span className="sr-only">Save highlight</span>
+              </button>
+              <button
+                type="button"
+                onClick={toggleEditing}
+                className="bg-red-500 text-white p-2 rounded-md flex items-center gap-2 flex-1 justify-center hover:bg-red-600"
+                title="Cancel"
+                aria-label="Cancel"
+              >
+                <FaTimes aria-hidden="true" />
+                <span className="sr-only">Cancel</span>
+              </button>
+            </div>
           </form>
-          <button
-            type="button"
-            onClick={toggleEditing}
-            className="bg-red-500 text-white p-2 rounded-md block w-full"
-          >
-            Cancel
-          </button>
         </>
       )}
 
       {!isEditing && (
         <>
-          <p>{highlight.text}</p>
+          <p dangerouslySetInnerHTML={{ __html: sanitizedText }} />
 
           {highlight.note && (
             <details className="mt-4 text-sm bg-blue-50 rounded-md px-2 py-1">
@@ -72,12 +90,26 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
           )}
 
           {!isEditing && (
-            <button
-              onClick={toggleEditing}
-              className="bg-blue-500 text-white py-1 px-4 rounded-md mt-4 text-sm"
-            >
-              Edit
-            </button>
+            <div className="flex justify-end mt-4 gap-2">
+              <button
+                onClick={toggleEditing}
+                className="text-blue-400 hover:text-blue-500 text-lg"
+                title="Edit highlight"
+                aria-label="Edit highlight"
+              >
+                <FaEdit aria-hidden="true" />
+                <span className="sr-only">Edit highlight</span>
+              </button>
+              <button
+                onClick={handleDelete}
+                className="text-red-400 hover:text-red-500"
+                title="Delete highlight"
+                aria-label="Delete highlight"
+              >
+                <FaTrashAlt aria-hidden="true" />
+                <span className="sr-only">Delete highlight</span>
+              </button>
+            </div>
           )}
         </>
       )}

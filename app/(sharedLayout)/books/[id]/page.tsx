@@ -18,37 +18,35 @@ export default async function BookPage({ params }: { params: { id: string } }) {
             alt={book.title}
             width={100}
             height={100}
-            className="rounded-full w-28 h-28"
+            className="rounded-full w-28 h-28 bg-gray-300"
           />
         )}
         <div>
-          <h1 className="text-2xl font-bold">{book.title}</h1>
-          <p className="text-sm text-gray-500">{book.author}</p>
-          <p className="text-sm text-gray-500">Category: {book.category}</p>
-          {book.last_highlight_at && (
-            <p className="text-sm text-gray-500">
-              Last Highlighted:{' '}
-              {new Date(book.last_highlight_at).toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-              })}
-            </p>
-          )}
-          {book.source_url && (
+          <p className="text-base font-bold text-blue-500">{book.author}</p>
+
+          {book.source_url ? (
             <Link
               href={book.source_url}
               target="_blank"
-              className="text-sm text-gray-500"
+              rel="noopener noreferrer"
+              aria-label={`View source for ${book.title} (opens in a new tab)`}
             >
-              View Source ({book.source})
+              <h1 className="text-2xl font-bold mb-2 inline-block hover:underline">
+                {book.title}
+              </h1>
             </Link>
+          ) : (
+            <h1 className="text-2xl font-bold mb-2">{book.title}</h1>
           )}
-          {book.num_highlights > 0 && (
-            <p className="text-sm text-gray-500">
-              {book.num_highlights} highlights
-            </p>
-          )}
+          <div className="flex items-center gap-x-4 text-xs font-mono tracking-tight text-gray-500">
+            <Link
+              href={`/books?category=${book.category}`}
+              className="bg-purple-500 text-white px-2 py-1 rounded-lg text-xs font-mono tracking-tight inline-block"
+            >
+              {book.category}
+            </Link>
+            {book.num_highlights > 0 && <p>{book.num_highlights} highlights</p>}
+          </div>
         </div>
       </div>
 

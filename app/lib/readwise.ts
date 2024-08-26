@@ -33,6 +33,10 @@ export async function fetchReadwise(
         `Failed to fetch Readwise endpoint ${endpoint}: ${response.statusText}`
       );
     }
+
+    //? was getting an error "Unexpected end of JSON input" when calling the deleteHighlight action
+    if (!response.body) return null;
+
     return response.json();
   } catch (error) {
     console.error(`Error fetching Readwise endpoint ${endpoint}:`, error);

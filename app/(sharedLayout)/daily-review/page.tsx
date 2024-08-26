@@ -77,6 +77,7 @@ function HighlightStack({
         );
       })}
       {/* current highlight */}
+
       <div
         key={currentHighlight.id}
         className="relative bg-white rounded-md shadow-md p-8"

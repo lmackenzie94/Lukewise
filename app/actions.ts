@@ -48,3 +48,12 @@ export const updateHighlight = async (
     message: 'Highlight updated'
   };
 };
+
+export const deleteHighlight = async (id: number, book_id: number) => {
+  await fetchReadwise(`highlights/${id}/`, {
+    method: 'DELETE'
+  });
+
+  revalidatePath(`/books/${book_id}`);
+  revalidatePath(`/highlights/${id}`);
+};
