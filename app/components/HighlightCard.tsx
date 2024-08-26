@@ -89,7 +89,12 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
             {/* TODO: pass the highlight id without a hidden input */}
             <input type="hidden" name="id" value={highlight.id} />
             <textarea name="text" defaultValue={highlight.text} rows={10} />
-            <textarea name="note" defaultValue={highlight.note} rows={4} />
+            <textarea
+              name="note"
+              defaultValue={highlight.note}
+              rows={4}
+              placeholder="Add a note..."
+            />
 
             {/* TODO: proper auth */}
             <input
