@@ -9,7 +9,7 @@ export default function Header() {
 
   return (
     <header className="mb-8 container">
-      <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 py-6 sm:py-10">
+      <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 py-6 sm:py-8">
         <Link href="/">
           <p className="text-2xl sm:text-3xl font-black">
             {SITE_TITLE}
