@@ -53,31 +53,44 @@ const ContentList = async ({
   let contentToDisplay: BookWithHiddenStatus[] = [];
   let authorsToDisplay: string[] = [];
 
+  // TODO: do this better
   if (currentCategory || currentAuthor) {
     if (currentCategory && currentAuthor) {
-      const contentForCategory = await getContentForCategory(currentCategory);
+      let contentForCategory = await getContentForCategory(currentCategory);
+      if (!showHidden) {
+        contentForCategory = contentForCategory.filter(
+          content => !content.hidden
+        );
+      }
       authorsToDisplay = getAuthors(contentForCategory);
       contentToDisplay = contentForCategory.filter(
         content => content.author === currentAuthor
       );
     } else if (currentCategory) {
-      const contentForCategory = await getContentForCategory(currentCategory);
+      let contentForCategory = await getContentForCategory(currentCategory);
+      if (!showHidden) {
+        contentForCategory = contentForCategory.filter(
+          content => !content.hidden
+        );
+      }
       authorsToDisplay = getAuthors(contentForCategory);
       contentToDisplay = contentForCategory;
     } else if (currentAuthor) {
       const contentForAuthor = await getContentForAuthor(currentAuthor);
-      const allContent = await getAllContent();
+      let allContent = await getAllContent();
+      if (!showHidden) {
+        allContent = allContent.filter(content => !content.hidden);
+      }
       authorsToDisplay = getAuthors(allContent);
       contentToDisplay = contentForAuthor;
     }
   } else {
-    const allContent = await getAllContent();
+    let allContent = await getAllContent();
+    if (!showHidden) {
+      allContent = allContent.filter(content => !content.hidden);
+    }
     authorsToDisplay = getAuthors(allContent);
     contentToDisplay = allContent.slice(0, CONTENT_TO_SHOW_ON_LOAD);
-  }
-
-  if (!showHidden) {
-    contentToDisplay = contentToDisplay.filter(content => !content.hidden);
   }
 
   contentToDisplay.sort((a, b) => a.title.localeCompare(b.title));
