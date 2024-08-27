@@ -46,6 +46,9 @@ export const updateHighlight = async (
     revalidatePath(`/content/${updatedHighlight.book_id}`);
   }
 
+  revalidatePath('/favourites');
+  revalidatePath('/daily-review');
+
   return {
     ok: true,
     status: 200,
@@ -77,6 +80,9 @@ export const deleteHighlight = async (
     revalidatePath(`/content/${bookId}`);
   }
 
+  revalidatePath('/favourites');
+  revalidatePath('/daily-review');
+
   return {
     ok: true,
     status: 200,
@@ -107,6 +113,9 @@ export const hideContent = async (formData: FormData) => {
 
   revalidatePath(`/content/${contentId}`);
   revalidatePath('/content');
+  revalidatePath('/favourites');
+  revalidatePath('/daily-review');
+
   // redirect('/content');
 };
 
@@ -125,6 +134,9 @@ export const unhideContent = async (formData: FormData) => {
 
   revalidatePath(`/content/${contentId}`);
   revalidatePath('/content');
+  revalidatePath('/favourites');
+  revalidatePath('/daily-review');
+
   // redirect('/content');
 };
 

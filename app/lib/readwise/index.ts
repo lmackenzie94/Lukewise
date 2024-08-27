@@ -23,8 +23,6 @@ import {
 import { Book, BookCategory } from './types';
 
 // Readwise calls them "Books" but I'm calling them "Content" because "books" is a category
-//! TODO: temporary - use DB
-const BOOKS_TO_HIDE = [41615353, 41515405];
 
 // TODO: better error handling
 export async function fetchReadwise<T>(
@@ -75,9 +73,13 @@ export async function getDailyReview(): Promise<DailyReviewWithContentIds | null
     })
   );
 
+  const hiddenContentIds = (await getHiddenContentFromDb()).map(
+    content => content.contentId
+  );
+
   const visibleHighlights = highlightsWithContentIds.filter(highlight => {
     if (highlight.book_id) {
-      return !BOOKS_TO_HIDE.includes(highlight.book_id);
+      return !hiddenContentIds.includes(highlight.book_id);
     }
     return true;
   });
@@ -131,19 +133,24 @@ export async function getHighlight(
   return data;
 }
 
-export function getFavouriteHighlights({
+export async function getFavouriteHighlights({
   pageSize = 10,
   page = 1
 }: {
   pageSize?: number;
   page?: number;
-}): { count: number; results: FavouriteHighlight[] } {
+}): Promise<{ count: number; results: FavouriteHighlight[] }> {
   const data: FavouriteHighlight[] = favouritesData;
 
   const paginatedResults = data.slice((page - 1) * pageSize, page * pageSize);
+
+  const hiddenContentIds = (await getHiddenContentFromDb()).map(
+    content => content.contentId
+  );
+
   const visibleHighlights = paginatedResults.filter(highlight => {
     if (highlight.user_book_id) {
-      return !BOOKS_TO_HIDE.includes(highlight.user_book_id);
+      return !hiddenContentIds.includes(highlight.user_book_id);
     }
     return true;
   });
