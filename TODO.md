@@ -7,3 +7,7 @@
 - [ ] Password protect delete highlight
 - [ ] Handle invalid category or author query params
 - [ ] Add error page(s)
+- [ ] AI-generated summaries for each "content" (store in DB for re-use)
+- [ ] See if there's a usecase for the Readwise API "Highlights EXPORT" endpoint
+- [ ] Add search
+- [ ] Try out a state management library (e.g. Zustand)
