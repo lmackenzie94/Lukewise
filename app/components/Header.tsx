@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { SITE_TITLE, navLinks } from '../constants';
+import { SITE_TITLE, NAV_LINKS } from '../constants';
 import { usePathname } from 'next/navigation';
 
 export default function Header() {
@@ -20,7 +20,7 @@ export default function Header() {
           </p>
         </Link>
         <div className="flex items-center gap-8 mt-4 sm:mt-0 text-sm sm:text-base font-medium">
-          {navLinks.map(({ label, href, colours }) => {
+          {NAV_LINKS.map(({ label, href, colours }) => {
             const isActive = pathname === href;
             return (
               <Link

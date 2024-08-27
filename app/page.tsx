@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { navLinks, SITE_TITLE, SITE_DESCRIPTION } from './constants';
+import { NAV_LINKS, SITE_TITLE, SITE_DESCRIPTION } from './constants';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export default function Home() {
           {SITE_TITLE}
         </h1>
 
-        {navLinks.map(({ label, href, colours, emoji }) => (
+        {NAV_LINKS.map(({ label, href, colours, emoji }) => (
           <Link
             href={href}
             key={href}
@@ -25,6 +25,35 @@ export default function Home() {
           </Link>
         ))}
       </div>
+
+      {/* <form
+        className="mt-16 flex flex-col items-center justify-center"
+        action={async (formData: FormData) => {
+          'use server';
+          const name = formData.get('name') as string;
+          const age = formData.get('age') as string;
+          const email = formData.get('email') as string;
+
+          if (!name || !age || !email) {
+            throw new Error('Missing required fields');
+          }
+
+          try {
+            await createUser({
+              name,
+              age: parseInt(age),
+              email
+            });
+          } catch (error) {
+            console.error('Something went wrong', error);
+          }
+        }}
+      >
+        <input type="text" name="name" placeholder="Name" required />
+        <input type="number" name="age" placeholder="Age" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <button type="submit">Create User</button>
+      </form> */}
     </main>
   );
 }

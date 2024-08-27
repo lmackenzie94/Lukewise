@@ -1,3 +1,4 @@
+import { hideContent, unhideContent } from '@/app/actions';
 import { HighlightCard } from '@/app/components/HighlightCard';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 import {
@@ -7,11 +8,13 @@ import {
 } from '@/app/lib/readwise';
 import Image from 'next/image';
 import Link from 'next/link';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const book = await getContent(params.id);
+
   return {
-    title: `${SITE_TITLE} | ${book.title}`,
+    title: book ? `${SITE_TITLE} | ${book.title}` : `${SITE_TITLE}`,
     description: SITE_DESCRIPTION
   };
 }
@@ -21,6 +24,10 @@ export const revalidate = 3600; // 1 hour
 export default async function BookPage({ params }: { params: { id: string } }) {
   const book = await getContent(params.id);
   const highlights = await getContentHighlights(params.id);
+
+  if (!book) {
+    return <div>Book not found</div>;
+  }
 
   return (
     <main className="container max-w-screen-md">
@@ -59,6 +66,11 @@ export default async function BookPage({ params }: { params: { id: string } }) {
               {book.category}
             </Link>
             {book.num_highlights > 0 && <p>{book.num_highlights} highlights</p>}
+            {book.hidden ? (
+              <UnhideButton contentId={book.id} />
+            ) : (
+              <HideButton contentId={book.id} />
+            )}
           </div>
         </div>
       </div>
@@ -69,5 +81,30 @@ export default async function BookPage({ params }: { params: { id: string } }) {
         ))}
       </div>
     </main>
+  );
+}
+
+async function HideButton({ contentId }: { contentId: number }) {
+  return (
+    <form action={hideContent} className="inline-flex">
+      <input type="hidden" name="contentId" value={contentId} />
+
+      <button type="submit" title="Hide">
+        <FaEye aria-hidden="true" className="text-lg" />
+        <span className="sr-only">Hide</span>
+      </button>
+    </form>
+  );
+}
+
+async function UnhideButton({ contentId }: { contentId: number }) {
+  return (
+    <form action={unhideContent} className="inline-flex">
+      <input type="hidden" name="contentId" value={contentId} />
+      <button type="submit" title="Unhide">
+        <FaEyeSlash aria-hidden="true" className="text-lg" />
+        <span className="sr-only">Unhide</span>
+      </button>
+    </form>
   );
 }

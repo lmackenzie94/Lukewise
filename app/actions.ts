@@ -2,6 +2,13 @@
 
 import { revalidatePath } from 'next/cache';
 import { fetchReadwise } from './lib/readwise';
+// import { redirect } from 'next/navigation';
+import { hideContentById } from '@/db/queries/insert';
+import { unhideContentById } from '@/db/queries/delete';
+import {
+  updateHighlight as updateHighlightReadwise,
+  deleteHighlight as deleteHighlightReadwise
+} from './lib/readwise';
 
 export const updateHighlight = async (
   formData: FormData
@@ -18,23 +25,26 @@ export const updateHighlight = async (
     };
   }
 
-  const id = formData.get('id');
-  const text = formData.get('text');
-  const note = formData.get('note');
+  const id = formData.get('id') as string;
+  const text = formData.get('text') as string;
+  const note = formData.get('note') as string;
 
-  const data = await fetchReadwise(`highlights/${id}/`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      text,
-      note
-    })
+  const updatedHighlight = await updateHighlightReadwise(id, {
+    text,
+    note
   });
 
-  // TODO: better way to do this? use tags?
-  revalidatePath(`/content/${data.book_id}`);
+  if (!updatedHighlight) {
+    return {
+      ok: false,
+      status: 500,
+      message: 'Failed to update highlight'
+    };
+  }
+
+  if (updatedHighlight.book_id) {
+    revalidatePath(`/content/${updatedHighlight.book_id}`);
+  }
 
   return {
     ok: true,
@@ -58,20 +68,64 @@ export const deleteHighlight = async (
     };
   }
 
-  const highlightId = formData.get('highlight_id');
-  const bookId = formData.get('book_id');
+  const highlightId = formData.get('highlight_id') as string;
+  const bookId = formData.get('book_id') as string;
 
-  await fetchReadwise(`highlights/${highlightId}/`, {
-    method: 'DELETE'
-  });
+  await deleteHighlightReadwise(highlightId);
 
-  revalidatePath(`/content/${bookId}`);
+  if (bookId) {
+    revalidatePath(`/content/${bookId}`);
+  }
 
   return {
     ok: true,
     status: 200,
     message: 'Highlight deleted'
   };
+};
+
+export const hideContent = async (formData: FormData) => {
+  // if (!passwordIsCorrect(formData)) {
+  //   return {
+  //     ok: false,
+  //     status: 401,
+  //     message: 'Wrong password 🙅🏻‍♂️'
+  //   };
+  // }
+
+  const contentId = formData.get('contentId');
+
+  if (!contentId) {
+    return {
+      ok: false,
+      status: 400,
+      message: 'Content ID is required'
+    };
+  }
+
+  await hideContentById(Number(contentId));
+
+  revalidatePath(`/content/${contentId}`);
+  revalidatePath('/content');
+  // redirect('/content');
+};
+
+export const unhideContent = async (formData: FormData) => {
+  const contentId = formData.get('contentId');
+
+  if (!contentId) {
+    return {
+      ok: false,
+      status: 400,
+      message: 'Content ID is required'
+    };
+  }
+
+  await unhideContentById(Number(contentId));
+
+  revalidatePath(`/content/${contentId}`);
+  revalidatePath('/content');
+  // redirect('/content');
 };
 
 const passwordIsCorrect = (formData: FormData) => {

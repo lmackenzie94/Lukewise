@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import { getDailyReview } from '@/app/lib/readwise';
-import { ReviewHighlight } from '../../types';
+import { ReviewHighlightWithContentIds } from '../../types';
 import Link from 'next/link';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { Metadata } from 'next';
-import { SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
+import { CATEGORIES, SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 
 const PAGE_TITLE = 'Daily Review';
 
@@ -20,15 +20,20 @@ export default async function Home({
 }) {
   const dailyReview = await getDailyReview();
 
+  if (!dailyReview) {
+    return <div>No daily review found</div>;
+  }
+
   const todaysDate = new Date().toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
     year: 'numeric'
   });
+
   const highlightsToReview = dailyReview.highlights.length;
-  const currentHighlightIdx = searchParams.highlight
-    ? parseInt(searchParams.highlight)
-    : 0;
+
+  const currentHighlightNumber = Number(searchParams.highlight) || 1;
+  const currentHighlightIdx = currentHighlightNumber - 1;
 
   const currentHighlight = dailyReview.highlights[currentHighlightIdx];
 
@@ -50,7 +55,7 @@ export default async function Home({
       <div className="flex justify-center gap-4 mt-6 text-xl">
         {currentHighlightIdx > 0 && (
           <Link
-            href={`/daily-review?highlight=${currentHighlightIdx - 1}`}
+            href={`/daily-review?highlight=${currentHighlightNumber - 1}`}
             className="bg-blue-500 text-white p-4 rounded-full hover:bg-blue-600"
             aria-label="Previous highlight"
           >
@@ -60,7 +65,7 @@ export default async function Home({
         )}
         {currentHighlightIdx < highlightsToReview - 1 && (
           <Link
-            href={`/daily-review?highlight=${currentHighlightIdx + 1}`}
+            href={`/daily-review?highlight=${currentHighlightNumber + 1}`}
             className="bg-green-500 text-white p-4 rounded-full hover:bg-green-600"
             aria-label="Next highlight"
           >
@@ -76,8 +81,12 @@ export default async function Home({
 function HighlightStack({
   currentHighlight
 }: {
-  currentHighlight: ReviewHighlight;
+  currentHighlight: ReviewHighlightWithContentIds;
 }) {
+  const category = CATEGORIES.find(
+    c => c.titleSingular === currentHighlight.source_type
+  );
+
   return (
     <div className="relative">
       {/* fake cards */}
@@ -104,23 +113,45 @@ function HighlightStack({
               alt={currentHighlight.title}
               width={200}
               height={200}
-              className="rounded-full w-12 h-12"
+              className="rounded-full w-12 sm:w-14 h-12 sm:h-14"
             />
           )}
           <div>
-            <h2 className="text-base sm:text-lg font-bold">
-              {currentHighlight.title}
-            </h2>
+            {currentHighlight.book_id ? (
+              <Link
+                href={`/content/${currentHighlight.book_id}`}
+                className="block"
+              >
+                <h2 className="text-base sm:text-lg font-bold hover:underline leading-none mb-1 sm:mb-0">
+                  {currentHighlight.title}
+                </h2>
+              </Link>
+            ) : (
+              <h2 className="text-base sm:text-lg font-bold leading-none mb-1 sm:mb-0">
+                {currentHighlight.title}
+              </h2>
+            )}
             {currentHighlight.author && (
               <p className="text-gray-500 text-xs sm:text-sm">
                 {currentHighlight.author}
               </p>
             )}
+            <p
+              className={`inline-block rounded-full text-white text-[.55rem] py-1 px-2 uppercase font-medium ${category?.colour}`}
+            >
+              {category?.titleSingular}
+            </p>
           </div>
         </div>
         <p className="text-sm sm:text-base whitespace-pre-line">
           {currentHighlight.text}
         </p>
+        {currentHighlight.note && (
+          <details className="mt-4 text-sm bg-blue-50 rounded-md px-2 py-1">
+            <summary className="text-sm font-bold">Luke&apos;s Note</summary>
+            <p className="mt-2 p-2">{currentHighlight.note}</p>
+          </details>
+        )}
       </div>
     </div>
   );

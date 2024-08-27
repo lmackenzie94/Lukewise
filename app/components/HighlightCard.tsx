@@ -1,6 +1,5 @@
 'use client';
 
-import { ListHighlight } from '../types';
 import { useState } from 'react';
 import { deleteHighlight, updateHighlight } from '../actions';
 import {
@@ -12,6 +11,7 @@ import {
 } from 'react-icons/fa';
 import DOMPurify from 'isomorphic-dompurify';
 import { useFormStatus } from 'react-dom';
+import { Highlight } from '../lib/readwise/types';
 
 function SaveButton() {
   const { pending } = useFormStatus();
@@ -47,7 +47,7 @@ function ConfirmDeleteButton() {
   );
 }
 
-export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
+export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -163,7 +163,11 @@ export const HighlightCard = ({ highlight }: { highlight: ListHighlight }) => {
               className="flex gap-2 justify-end mt-4 text-sm"
             >
               <input type="hidden" name="highlight_id" value={highlight.id} />
-              <input type="hidden" name="book_id" value={highlight.book_id} />
+              <input
+                type="hidden"
+                name="book_id"
+                value={highlight.book_id || ''}
+              />
               <input
                 type="password"
                 name="password"

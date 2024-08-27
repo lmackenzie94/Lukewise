@@ -7,10 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest"
+    "test": "vitest",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@libsql/client": "^0.10.0",
     "@types/dompurify": "^3.0.5",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.33.0",
     "html-entities": "^2.5.2",
     "isomorphic-dompurify": "^2.14.0",
     "next": "14.2.6",
@@ -27,6 +32,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@vitejs/plugin-react": "^4.3.1",
+    "drizzle-kit": "^0.24.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.6",
     "jsdom": "^24.1.1",
