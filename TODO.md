@@ -11,3 +11,4 @@
 - [ ] See if there's a usecase for the Readwise API "Highlights EXPORT" endpoint
 - [ ] Add search
 - [ ] Try out a state management library (e.g. Zustand)
+- [ ] Render highlights with heading notes (ex. .h1, .h2, etc.) as actual headings
