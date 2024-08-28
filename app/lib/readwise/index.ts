@@ -91,40 +91,42 @@ export async function getDailyReview(): Promise<DailyReviewWithContentIds | null
 }
 
 // HIGHLIGHTS -----------------------------------------------------------------
-export async function getHighlights(options?: {
-  pageSize?: number;
-  page?: number;
-}): Promise<HighlightsListWithContentInfo | null> {
-  const { pageSize = 10, page = 1 } = options || {};
+// export async function getHighlights(options?: {
+//   pageSize?: number;
+//   page?: number;
+// }): Promise<HighlightsListWithContentInfo | null> {
+//   const { pageSize = 10, page = 1 } = options || {};
 
-  const data = await fetchReadwise<HighlightList>(
-    `highlights/?page_size=${pageSize}&page=${page}`
-  );
+//   const data = await fetchReadwise<HighlightList>(
+//     `highlights/?page_size=${pageSize}&page=${page}`
+//   );
 
-  if (!data) return null;
+//   if (!data) return null;
 
-  const allContentIds = data.results
-    .map(highlight => highlight.book_id)
-    .filter(id => id !== null);
+//   const allContentIds = data.results
+//     .map(highlight => highlight.book_id)
+//     .filter(id => id !== null);
 
-  const contentIds = Array.from(new Set(allContentIds));
-  const content = await Promise.all(
-    contentIds.map(id => getContent(id.toString()))
-  );
-  const contentMap = Object.fromEntries(
-    content.filter(c => c !== null).map(c => [c.id, c])
-  );
+//   const contentIds = Array.from(new Set(allContentIds));
+//   const content = await Promise.all(
+//     contentIds.map(id => getContent(id.toString()))
+//   );
+//   const contentMap = Object.fromEntries(
+//     content.filter(c => c !== null).map(c => [c.id, c])
+//   );
 
-  const highlightsWithContentInfo = data.results.map(highlight => ({
-    ...highlight,
-    book: highlight.book_id ? contentMap[highlight.book_id] : null
-  }));
+//   const highlightsWithContentInfo = data.results.map(highlight => ({
+//     ...highlight,
+//     book: highlight.book_id ? contentMap[highlight.book_id] : null
+//   }));
 
-  return {
-    ...data,
-    results: highlightsWithContentInfo
-  };
-}
+//   const reversedHighlights = highlightsWithContentInfo.reverse();
+
+//   return {
+//     ...data,
+//     results: reversedHighlights
+//   };
+// }
 
 export async function getHighlight(
   id: number
@@ -254,7 +256,13 @@ export async function getContentHighlights(id: string): Promise<HighlightList> {
       results: []
     };
 
-  return data;
+  // Readwise API returns highlights with newest first
+  const reversedHighlights = data.results.reverse();
+
+  return {
+    ...data,
+    results: reversedHighlights
+  };
 }
 
 export async function getContentForCategory(

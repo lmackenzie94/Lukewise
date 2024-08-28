@@ -42,7 +42,12 @@ export default async function BookPage({ params }: { params: { id: string } }) {
           />
         )}
         <div>
-          <p className="text-sm font-bold text-blue-500">{book.author}</p>
+          <Link
+            href={`/content?author=${book.author}`}
+            className="block text-sm font-semibold text-blue-500 hover:underline"
+          >
+            {book.author}
+          </Link>
 
           {book.source_url ? (
             <Link
@@ -76,9 +81,22 @@ export default async function BookPage({ params }: { params: { id: string } }) {
       </div>
 
       <div className="flex flex-col gap-4">
-        {highlights.results.map(highlight => (
-          <HighlightCard key={highlight.id} highlight={highlight} />
-        ))}
+        {highlights.results.map(highlight => {
+          const headingNotes = ['.h1', '.h2', '.h3', '.h4', '.h5', '.h6'];
+          const isHeadingHighlight = headingNotes.some(note =>
+            highlight.note?.includes(note)
+          );
+          return isHeadingHighlight ? (
+            <h2
+              key={highlight.id}
+              className="text-base sm:text-lg font-bold mt-3"
+            >
+              {highlight.text}
+            </h2>
+          ) : (
+            <HighlightCard key={highlight.id} highlight={highlight} />
+          );
+        })}
       </div>
     </main>
   );

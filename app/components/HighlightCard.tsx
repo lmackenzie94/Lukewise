@@ -82,7 +82,10 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
   const sanitizedText = DOMPurify.sanitize(highlight.text);
 
   return (
-    <div key={highlight.id} className="bg-white p-6 rounded-md shadow-md">
+    <div
+      key={highlight.id}
+      className="bg-white p-4 sm:p-6 pb-4 sm:pb-4 rounded-md shadow-md"
+    >
       {isEditing && (
         <>
           <form action={handleSubmit} className="flex flex-col gap-2 text-sm">
