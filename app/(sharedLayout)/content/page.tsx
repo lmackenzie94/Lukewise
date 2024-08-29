@@ -103,11 +103,15 @@ const ContentList = async ({
           {authorsToDisplay.length > 0 && (
             <div>
               <h2 className="text-lg font-bold mb-2">Authors</h2>
+              {/* skip to main content */}
+              <a href="#content" className="block sr-only focus:not-sr-only">
+                Skip to main content
+              </a>
               <ul className="h-56 md:h-[calc(80vh-70px)] overflow-y-auto border border-gray-300 rounded-md text-xs lg:text-sm">
                 {authorsToDisplay.map(author => (
                   <li
                     key={author}
-                    className="hover:bg-blue-100 odd:bg-gray-50 bg-gray-100"
+                    className="hocus:bg-blue-100 odd:bg-gray-50 bg-gray-100"
                   >
                     <Link
                       href={`/content/?author=${author}${
@@ -130,7 +134,10 @@ const ContentList = async ({
           )}
         </div>
         <div className="flex-1">
-          <div className="flex flex-wrap gap-2 justify-center sm:justify-start mb-2">
+          <div
+            id="content"
+            className="flex flex-wrap gap-2 justify-center sm:justify-start mb-2"
+          >
             <Link
               key="all"
               href={`/content/${showHidden ? `?showHidden=${showHidden}` : ''}`}

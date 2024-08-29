@@ -9,7 +9,7 @@ export default function Header() {
 
   return (
     <header className="mb-8 container">
-      <div className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 py-6 sm:py-8">
+      <nav className="flex flex-col sm:flex-row items-center justify-between border-b border-gray-200 py-6 sm:py-8">
         <Link href="/">
           <p className="text-2xl sm:text-3xl font-black">
             {SITE_TITLE}
@@ -19,21 +19,23 @@ export default function Header() {
             </span>
           </p>
         </Link>
-        <div className="flex items-center gap-8 mt-4 sm:mt-0 text-sm sm:text-base font-medium">
+        <div className="flex items-center gap-8 mt-4 sm:mt-0 text-sm sm:text-base font-normal">
           {NAV_LINKS.map(({ label, href, colours }) => {
             const isActive = pathname === href;
             return (
               <Link
                 href={href}
                 key={href}
-                className={`hover:underline ${isActive ? colours.text : ''}`}
+                className={`hocus:underline outline-none ${
+                  isActive ? colours.text : ''
+                }`}
               >
                 {label}
               </Link>
             );
           })}
         </div>
-      </div>
+      </nav>
     </header>
   );
 }

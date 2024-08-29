@@ -8,19 +8,37 @@ export const NAV_LINKS = [
     label: 'Daily Review',
     href: '/daily-review',
     emoji: '📅',
-    colours: { text: 'text-purple-600', bg: 'bg-purple-600' }
+    colours: {
+      text: 'text-purple-600',
+      bg: 'bg-purple-600',
+      bgFaded: 'bg-purple-600/5',
+      border: 'border-purple-600',
+      hocus: 'hocus:bg-purple-600'
+    }
   },
   {
     label: 'My Content',
     href: '/content',
     emoji: '⭐️',
-    colours: { text: 'text-blue-600', bg: 'bg-blue-600' }
+    colours: {
+      text: 'text-blue-600',
+      bg: 'bg-blue-600',
+      bgFaded: 'bg-blue-600/5',
+      border: 'border-blue-600',
+      hocus: 'hocus:bg-blue-600'
+    }
   },
   {
     label: 'Favourites',
     href: '/favourites',
     emoji: '💖',
-    colours: { text: 'text-green-600', bg: 'bg-green-600' }
+    colours: {
+      text: 'text-green-600',
+      bg: 'bg-green-600',
+      bgFaded: 'bg-green-600/5',
+      border: 'border-green-600',
+      hocus: 'hocus:bg-green-600'
+    }
   }
 ];
 

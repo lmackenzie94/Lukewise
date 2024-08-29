@@ -19,41 +19,12 @@ export default function Home() {
           <Link
             href={href}
             key={href}
-            className={`block text-lg md:text-2xl font-bold py-4 px-8 rounded-2xl text-white mb-5 shadow-md font-mono tracking-tight ${colours.bg} hover:saturate-150`}
+            className={`block text-lg md:text-2xl font-bold py-4 px-8 ${colours.text} bg-slate-50 border-2 shadow-[5px_5px_0_0] mb-5 ${colours.border} font-mono font-bold tracking-tight ${colours.bgFaded} hocus:shadow-none transition-all duration-500 ${colours.hocus} hocus:text-white hocus:outline-none`}
           >
             {label} {emoji}
           </Link>
         ))}
       </div>
-
-      {/* <form
-        className="mt-16 flex flex-col items-center justify-center"
-        action={async (formData: FormData) => {
-          'use server';
-          const name = formData.get('name') as string;
-          const age = formData.get('age') as string;
-          const email = formData.get('email') as string;
-
-          if (!name || !age || !email) {
-            throw new Error('Missing required fields');
-          }
-
-          try {
-            await createUser({
-              name,
-              age: parseInt(age),
-              email
-            });
-          } catch (error) {
-            console.error('Something went wrong', error);
-          }
-        }}
-      >
-        <input type="text" name="name" placeholder="Name" required />
-        <input type="number" name="age" placeholder="Age" required />
-        <input type="email" name="email" placeholder="Email" required />
-        <button type="submit">Create User</button>
-      </form> */}
     </main>
   );
 }
