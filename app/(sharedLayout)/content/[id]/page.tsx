@@ -8,7 +8,8 @@ import {
 } from '@/app/lib/readwise';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaEye, FaEyeSlash, FaSync } from 'react-icons/fa';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { RefreshButton } from './RefreshButton';
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const book = await getContent(params.id);
@@ -84,10 +85,7 @@ export default async function BookPage({ params }: { params: { id: string } }) {
               <HideButton contentId={book.id} />
             )}
             <form action={refreshContentWithBookId} className="inline-flex">
-              <button type="submit" title="Refresh">
-                <FaSync aria-hidden="true" />
-                <span className="sr-only">Refresh</span>
-              </button>
+              <RefreshButton />
             </form>
           </div>
         </div>
