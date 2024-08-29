@@ -6,7 +6,6 @@ import {
   getContentHighlights,
   getLargerImage
 } from '@/app/lib/readwise';
-import { revalidatePath } from 'next/cache';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaEye, FaEyeSlash, FaSync } from 'react-icons/fa';
@@ -20,7 +19,11 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-// export const revalidate = 60; // 1 minute
+// ISR
+export const revalidate = 86400; // 1 day
+export function generateStaticParams() {
+  return [];
+}
 
 export default async function BookPage({ params }: { params: { id: string } }) {
   const book = await getContent(params.id);
