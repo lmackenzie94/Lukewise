@@ -11,6 +11,8 @@ import { CATEGORIES, SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 import { BookCategory } from '@/app/lib/readwise/types';
 import { BookWithHiddenStatus } from '@/app/types';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { refreshAllContent } from '@/app/actions';
+import { RefreshButton } from '@/app/components/RefreshButton';
 
 const PAGE_TITLE = 'My Content';
 
@@ -134,43 +136,53 @@ const ContentList = async ({
           )}
         </div>
         <div className="flex-1">
-          <div
-            id="content"
-            className="flex flex-wrap gap-2 justify-center sm:justify-start mb-2"
-          >
-            <Link
-              key="all"
-              href={`/content/${showHidden ? `?showHidden=${showHidden}` : ''}`}
-              className={`inline-block text-xs py-1 px-2 rounded-md font-mono uppercase ${
-                !currentCategory
-                  ? 'bg-gray-800 text-gray-200 '
-                  : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-              }`}
-            >
-              All
-            </Link>
-            {CATEGORIES.map(category => (
-              <Link
-                key={category.title}
-                href={`/content/?category=${category.title}${
-                  showHidden ? `&showHidden=${showHidden}` : ''
-                }`}
-                className={`inline-block text-xs py-1 px-2 rounded-md font-mono uppercase ${
-                  category.title === currentCategory
-                    ? `${category.colour} text-white`
-                    : `bg-gray-200 text-gray-800 hover:bg-gray-300`
-                }`}
+          <div id="content" className="mb-4 sm:mb-2">
+            <div className="flex justify-center sm:justify-between items-center flex-col-reverse sm:flex-row gap-4">
+              <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+                <Link
+                  key="all"
+                  href={`/content/${
+                    showHidden ? `?showHidden=${showHidden}` : ''
+                  }`}
+                  className={`inline-block text-xs py-1 px-2 rounded-md font-mono uppercase ${
+                    !currentCategory
+                      ? 'bg-gray-800 text-gray-200 '
+                      : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                  }`}
+                >
+                  All
+                </Link>
+                {CATEGORIES.map(category => (
+                  <Link
+                    key={category.title}
+                    href={`/content/?category=${category.title}${
+                      showHidden ? `&showHidden=${showHidden}` : ''
+                    }`}
+                    className={`inline-block text-xs py-1 px-2 rounded-md font-mono uppercase ${
+                      category.title === currentCategory
+                        ? `${category.colour} text-white`
+                        : `bg-gray-200 text-gray-800 hover:bg-gray-300`
+                    }`}
+                  >
+                    {category.title}
+                  </Link>
+                ))}
+              </div>
+
+              <form
+                action={refreshAllContent}
+                className="inline-flex text-gray-600"
               >
-                {category.title}
-              </Link>
-            ))}
+                <RefreshButton />
+              </form>
+            </div>
           </div>
 
           <Link
             href={`/content/?showHidden=${!showHidden}${
               currentCategory ? `&category=${currentCategory}` : ''
             }${currentAuthor ? `&author=${currentAuthor}` : ''}`}
-            className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+            className="flex justify-center sm:inline-flex sm:justify-start text-xs text-gray-500 hover:text-gray-700 items-center gap-1"
           >
             {showHidden ? (
               <>

@@ -147,6 +147,11 @@ export const refreshContent = async (bookId: number, _: FormData) => {
   revalidatePath(`/content/${bookId}`);
 };
 
+export const refreshAllContent = async (_: FormData) => {
+  console.log('Refreshing all content');
+  revalidatePath('/content');
+};
+
 const passwordIsCorrect = (formData: FormData) => {
   const password = formData.get('password');
   return password === process.env.EDIT_PASSWORD;

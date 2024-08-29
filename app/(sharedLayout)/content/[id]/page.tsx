@@ -9,7 +9,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { RefreshButton } from './RefreshButton';
+import { RefreshButton } from '../../../components/RefreshButton';
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const book = await getContent(params.id);
