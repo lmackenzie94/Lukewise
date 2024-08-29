@@ -35,6 +35,9 @@ export async function fetchReadwise<T>(
       headers: {
         ...options.headers,
         Authorization: `Token ${READWISE_API_KEY}`
+      },
+      next: {
+        revalidate: false // cache indefinitely
       }
     });
 

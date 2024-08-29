@@ -116,6 +116,7 @@ const ContentList = async ({
                     className="hocus:bg-blue-100 odd:bg-gray-50 bg-gray-100"
                   >
                     <Link
+                      prefetch={false}
                       href={`/content/?author=${author}${
                         currentCategory ? `&category=${currentCategory}` : ''
                       }${showHidden ? `&showHidden=${showHidden}` : ''}`}
@@ -140,6 +141,7 @@ const ContentList = async ({
             <div className="flex justify-center sm:justify-between items-center flex-col-reverse sm:flex-row gap-4">
               <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
                 <Link
+                  prefetch={false}
                   key="all"
                   href={`/content/${
                     showHidden ? `?showHidden=${showHidden}` : ''
@@ -154,6 +156,7 @@ const ContentList = async ({
                 </Link>
                 {CATEGORIES.map(category => (
                   <Link
+                    prefetch={false}
                     key={category.title}
                     href={`/content/?category=${category.title}${
                       showHidden ? `&showHidden=${showHidden}` : ''
@@ -179,6 +182,7 @@ const ContentList = async ({
           </div>
 
           <Link
+            prefetch={false}
             href={`/content/?showHidden=${!showHidden}${
               currentCategory ? `&category=${currentCategory}` : ''
             }${currentAuthor ? `&author=${currentAuthor}` : ''}`}
@@ -252,7 +256,11 @@ const ContentCard = ({
             </div>
           )}
         </div>
-        <Link href={`/content/${content.id}`} className="block hover:underline">
+        <Link
+          prefetch={false}
+          href={`/content/${content.id}`}
+          className="block hover:underline"
+        >
           <h2
             className="font-bold text-sm line-clamp-3 leading-4"
             style={{ wordBreak: 'break-word' }}
@@ -261,6 +269,7 @@ const ContentCard = ({
           </h2>
         </Link>
         <Link
+          prefetch={false}
           href={`/content/?author=${content.author}${
             showHidden ? `&showHidden=${showHidden}` : ''
           }`}
