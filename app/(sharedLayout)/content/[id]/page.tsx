@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-export const revalidate = 60; // 1 minute
+// export const revalidate = 60; // 1 minute
 
 export default async function BookPage({ params }: { params: { id: string } }) {
   const book = await getContent(params.id);
