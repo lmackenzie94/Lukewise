@@ -7,6 +7,13 @@ const nextConfig = {
         hostname: '*'
       }
     ]
+  },
+
+  // add additional logging to understand which requests are cached or uncached
+  logging: {
+    fetches: {
+      fullUrl: true
+    }
   }
 };
 
