@@ -58,7 +58,7 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
   };
 
   const handleSubmit = async (formData: FormData) => {
-    const response = await updateHighlight(formData);
+    const response = await updateHighlight(highlight.id, formData);
     if (!response.ok) {
       setError(response.message);
       return;
@@ -69,7 +69,11 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
   };
 
   const handleDelete = async (formData: FormData) => {
-    const response = await deleteHighlight(formData);
+    const response = await deleteHighlight(
+      highlight.id,
+      highlight.book_id,
+      formData
+    );
     if (!response.ok) {
       setError(response.message);
       return;
@@ -88,9 +92,8 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
     >
       {isEditing && (
         <>
+          {/* TODO: don't pass normal function to action, either pass the action itself or use onSubmit */}
           <form action={handleSubmit} className="flex flex-col gap-2 text-sm">
-            {/* TODO: pass the highlight id without a hidden input */}
-            <input type="hidden" name="id" value={highlight.id} />
             <textarea name="text" defaultValue={highlight.text} rows={10} />
             <textarea
               name="note"
@@ -165,12 +168,6 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
               action={handleDelete}
               className="flex gap-2 justify-end mt-4 text-sm"
             >
-              <input type="hidden" name="highlight_id" value={highlight.id} />
-              <input
-                type="hidden"
-                name="book_id"
-                value={highlight.book_id || ''}
-              />
               <input
                 type="password"
                 name="password"

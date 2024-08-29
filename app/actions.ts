@@ -11,6 +11,7 @@ import {
 } from './lib/readwise';
 
 export const updateHighlight = async (
+  highlightId: number,
   formData: FormData
 ): Promise<{
   status: number;
@@ -25,14 +26,16 @@ export const updateHighlight = async (
     };
   }
 
-  const id = formData.get('id') as string;
   const text = formData.get('text') as string;
   const note = formData.get('note') as string;
 
-  const updatedHighlight = await updateHighlightReadwise(id, {
-    text,
-    note
-  });
+  const updatedHighlight = await updateHighlightReadwise(
+    highlightId.toString(),
+    {
+      text,
+      note
+    }
+  );
 
   if (!updatedHighlight) {
     return {
@@ -57,6 +60,8 @@ export const updateHighlight = async (
 };
 
 export const deleteHighlight = async (
+  highlightId: number,
+  bookId: number | null,
   formData: FormData
 ): Promise<{
   status: number;
@@ -71,10 +76,7 @@ export const deleteHighlight = async (
     };
   }
 
-  const highlightId = formData.get('highlight_id') as string;
-  const bookId = formData.get('book_id') as string;
-
-  await deleteHighlightReadwise(highlightId);
+  await deleteHighlightReadwise(highlightId.toString());
 
   if (bookId) {
     revalidatePath(`/content/${bookId}`);
@@ -138,6 +140,11 @@ export const unhideContent = async (formData: FormData) => {
   revalidatePath('/daily-review');
 
   // redirect('/content');
+};
+
+export const refreshContent = async (bookId: number, _: FormData) => {
+  console.log(`Refreshing content for book ${bookId}`);
+  revalidatePath(`/content/${bookId}`);
 };
 
 const passwordIsCorrect = (formData: FormData) => {

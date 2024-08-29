@@ -1,4 +1,4 @@
-import { hideContent, unhideContent } from '@/app/actions';
+import { hideContent, refreshContent, unhideContent } from '@/app/actions';
 import { HighlightCard } from '@/app/components/HighlightCard';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 import {
@@ -6,9 +6,10 @@ import {
   getContentHighlights,
   getLargerImage
 } from '@/app/lib/readwise';
+import { revalidatePath } from 'next/cache';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaSync } from 'react-icons/fa';
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const book = await getContent(params.id);
@@ -28,6 +29,9 @@ export default async function BookPage({ params }: { params: { id: string } }) {
   if (!book) {
     return <div>Book not found</div>;
   }
+
+  //? passes the book id to the refreshContent action as first argument
+  const refreshContentWithBookId = refreshContent.bind(null, book.id);
 
   return (
     <main className="container max-w-screen-md">
@@ -76,6 +80,12 @@ export default async function BookPage({ params }: { params: { id: string } }) {
             ) : (
               <HideButton contentId={book.id} />
             )}
+            <form action={refreshContentWithBookId} className="inline-flex">
+              <button type="submit" title="Refresh">
+                <FaSync aria-hidden="true" />
+                <span className="sr-only">Refresh</span>
+              </button>
+            </form>
           </div>
         </div>
       </div>
