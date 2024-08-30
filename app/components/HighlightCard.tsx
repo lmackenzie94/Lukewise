@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { use, useRef, useState } from 'react';
 import { deleteHighlight, updateHighlight } from '../actions';
 import {
   FaCheckCircle,
@@ -49,7 +49,8 @@ function ConfirmDeleteButton() {
 }
 
 export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
-  const originalText = highlight.text;
+  const originalTextRef = useRef(highlight.text);
+
   const [text, setText] = useState(highlight.text);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -59,7 +60,7 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
     setIsEditing(prev => !prev);
     setError(null);
     if (isEditing) {
-      setText(originalText);
+      setText(originalTextRef.current);
     }
   };
 
