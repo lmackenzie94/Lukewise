@@ -12,6 +12,7 @@ import {
 import DOMPurify from 'isomorphic-dompurify';
 import { useFormStatus } from 'react-dom';
 import { Highlight } from '../lib/readwise/types';
+import ReactMarkdown from 'react-markdown';
 
 function SaveButton() {
   const { pending } = useFormStatus();
@@ -48,6 +49,8 @@ function ConfirmDeleteButton() {
 }
 
 export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
+  const originalText = highlight.text;
+  const [text, setText] = useState(highlight.text);
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,6 +58,9 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
   const toggleEditing = () => {
     setIsEditing(prev => !prev);
     setError(null);
+    if (isEditing) {
+      setText(originalText);
+    }
   };
 
   const handleSubmit = async (formData: FormData) => {
@@ -83,7 +89,39 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
     setError(null);
   };
 
-  const sanitizedText = DOMPurify.sanitize(highlight.text);
+  const toggleBold = () => {
+    const selectedText = window?.getSelection()?.toString();
+    if (!selectedText) return;
+
+    const isBold =
+      selectedText?.startsWith('**') && selectedText?.endsWith('**');
+    if (isBold) {
+      const unboldedText = selectedText.replaceAll('**', '');
+      setText(prevText => prevText.replace(selectedText, unboldedText));
+      return;
+    }
+
+    const boldText = `**${selectedText}**`;
+    setText(prevText => prevText.replace(selectedText, boldText));
+  };
+
+  const toggleItalic = () => {
+    const selectedText = window?.getSelection()?.toString();
+    if (!selectedText) return;
+
+    const isItalic =
+      selectedText?.startsWith('*') && selectedText?.endsWith('*');
+    if (isItalic) {
+      const unitalicizedText = selectedText.replaceAll('*', '');
+      setText(prevText => prevText.replace(selectedText, unitalicizedText));
+      return;
+    }
+
+    const italicizedText = `*${selectedText}*`;
+    setText(prevText => prevText.replace(selectedText, italicizedText));
+  };
+
+  const sanitizedText = DOMPurify.sanitize(text);
 
   return (
     <div
@@ -92,9 +130,28 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
     >
       {isEditing && (
         <>
+          <div className="flex gap-2 text-[.65rem] mb-2">
+            <button
+              onClick={toggleBold}
+              className="border border-blue-500 px-2 rounded font-bold"
+            >
+              Bold
+            </button>
+            <button
+              onClick={toggleItalic}
+              className="border border-blue-500 px-2 rounded italic"
+            >
+              Italic
+            </button>
+          </div>
           {/* TODO: don't pass normal function to action, either pass the action itself or use onSubmit */}
           <form action={handleSubmit} className="flex flex-col gap-2 text-sm">
-            <textarea name="text" defaultValue={highlight.text} rows={10} />
+            <textarea
+              name="text"
+              rows={10}
+              value={text}
+              onChange={e => setText(e.target.value)}
+            />
             <textarea
               name="note"
               defaultValue={highlight.note}
@@ -128,10 +185,9 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
 
       {!isEditing && (
         <>
-          <p
-            className="text-sm sm:text-base whitespace-pre-line"
-            dangerouslySetInnerHTML={{ __html: sanitizedText }}
-          />
+          <ReactMarkdown className="text-sm sm:text-base whitespace-pre-line">
+            {sanitizedText}
+          </ReactMarkdown>
 
           {highlight.note && (
             <details className="mt-4 text-sm bg-blue-50 rounded-md px-2 py-1">
