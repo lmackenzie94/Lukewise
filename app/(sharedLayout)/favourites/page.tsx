@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { getFavouriteHighlights } from '@/app/lib/readwise';
-import { Suspense } from 'react';
 import Image from 'next/image';
 import { FavouriteHighlight } from '@/app/types';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
@@ -29,9 +28,7 @@ export default function FavouritesPage({
         {PAGE_TITLE}
       </h1>
 
-      <Suspense fallback={<HighlightSkeleton />}>
-        <ListOfHighlights currentPage={currentPage} />
-      </Suspense>
+      <ListOfHighlights currentPage={currentPage} />
     </main>
   );
 }
@@ -91,22 +88,6 @@ const HighlightCard = ({ highlight }: { highlight: FavouriteHighlight }) => {
           <p className="text-gray-500 text-xs">{highlight.author}</p>
         </div>
       </div>
-    </div>
-  );
-};
-
-const HighlightSkeleton = () => {
-  return (
-    <div className="grid grid-cols-1 gap-4">
-      {Array.from({ length: Math.min(PAGE_SIZE, 10) }).map((_, index) => (
-        <div
-          key={index}
-          className="bg-gray-200 px-4 py-8 rounded-md animate-pulse"
-        >
-          <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
-          <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-        </div>
-      ))}
     </div>
   );
 };

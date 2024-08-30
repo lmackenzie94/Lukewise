@@ -14,6 +14,8 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { refreshAllContent } from '@/app/actions';
 import { RefreshButton } from '@/app/components/RefreshButton';
 
+export const revalidate = false; // cached indefinitely
+
 const PAGE_TITLE = 'My Content';
 
 export const metadata: Metadata = {
@@ -23,7 +25,7 @@ export const metadata: Metadata = {
 
 const CONTENT_TO_SHOW_ON_LOAD = 18;
 
-export default async function ContentPage({
+export default function ContentPage({
   searchParams
 }: {
   searchParams: {
@@ -33,13 +35,11 @@ export default async function ContentPage({
   };
 }) {
   return (
-    <Suspense fallback={<ContentSkeleton />}>
-      <ContentList
-        currentCategory={searchParams.category}
-        currentAuthor={searchParams.author}
-        showHidden={searchParams.showHidden === 'true'}
-      />
-    </Suspense>
+    <ContentList
+      currentCategory={searchParams.category}
+      currentAuthor={searchParams.author}
+      showHidden={searchParams.showHidden === 'true'}
+    />
   );
 }
 
@@ -281,16 +281,3 @@ const ContentCard = ({
     </article>
   );
 };
-
-const ContentSkeleton = () => (
-  <div className="container">
-    <div className="flex flex-col md:flex-row gap-4 items-start">
-      <div className="bg-gray-300 rounded-md w-full md:w-1/4 min-w-[200px] flex-shrink-0 h-screen animate-pulse"></div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 flex-1 animate-pulse">
-        {Array.from({ length: 12 }).map((_, index) => (
-          <div key={index} className="bg-gray-200 rounded-md h-20"></div>
-        ))}
-      </div>
-    </div>
-  </div>
-);

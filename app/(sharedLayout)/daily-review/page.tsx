@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { Metadata } from 'next';
 import { CATEGORIES, SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
+import { Suspense } from 'react';
+
+export const revalidate = 86400; // 1 day
 
 const PAGE_TITLE = 'Daily Review';
 
@@ -13,7 +16,39 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION
 };
 
-export default async function Home({
+export default function DailyReview({
+  searchParams
+}: {
+  searchParams: { highlight: string };
+}) {
+  const todaysDate = new Date().toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
+  return (
+    <main className="container max-w-screen-sm mx-auto">
+      <p className="text-blue-500 mb-1 text-sm sm:text-base text-center font-medium">
+        {todaysDate}
+      </p>
+      <h1 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
+        {PAGE_TITLE}
+      </h1>
+      <Suspense fallback={<LoadingSpinner />}>
+        <Review searchParams={searchParams} />
+      </Suspense>
+    </main>
+  );
+}
+
+const LoadingSpinner = () => (
+  <div className="flex justify-center">
+    <div className="lds-dual-ring text-blue-500"></div>
+  </div>
+);
+
+async function Review({
   searchParams
 }: {
   searchParams: { highlight: string };
@@ -24,12 +59,6 @@ export default async function Home({
     return <div>No daily review found</div>;
   }
 
-  const todaysDate = new Date().toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric'
-  });
-
   const highlightsToReview = dailyReview.highlights.length;
 
   const currentHighlightNumber = Number(searchParams.highlight) || 1;
@@ -38,13 +67,7 @@ export default async function Home({
   const currentHighlight = dailyReview.highlights[currentHighlightIdx];
 
   return (
-    <main className="container max-w-screen-sm mx-auto">
-      <p className="text-blue-500 mb-1 text-sm sm:text-base text-center font-medium">
-        {todaysDate}
-      </p>
-      <h1 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
-        {PAGE_TITLE}
-      </h1>
+    <>
       <HighlightStack currentHighlight={currentHighlight} />
 
       <p className="text-center mt-4 text-gray-500 text-sm">
@@ -74,10 +97,9 @@ export default async function Home({
           </Link>
         )}
       </div>
-    </main>
+    </>
   );
 }
-
 function HighlightStack({
   currentHighlight
 }: {

@@ -13,3 +13,4 @@
 - [ ] Try out a state management library (e.g. Zustand)
 - [x] Render highlights with heading notes (ex. .h1, .h2, etc.) as actual headings
 - [ ] Bug: click Edit button on a highlight > see <form> element in dev tools > `action="javascript:throw new Error('A React form was unexpectedly submitted...')`
+- [ ] Automate "Favourites" - currently manually copy-pasting from Readwise
