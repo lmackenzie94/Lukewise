@@ -268,22 +268,6 @@ export async function getContentHighlights(id: string): Promise<HighlightList> {
   };
 }
 
-export async function getContentForCategory(
-  category: BookCategory
-): Promise<BookWithHiddenStatus[]> {
-  const allContent = await getAllContent();
-  const content = allContent.filter(content => content.category === category);
-  return content;
-}
-
-export async function getContentForAuthor(
-  author: string
-): Promise<BookWithHiddenStatus[]> {
-  const allContent = await getAllContent();
-  const content = allContent.filter(content => content.author === author);
-  return content;
-}
-
 export async function getHiddenContent(): Promise<BookWithHiddenStatus[]> {
   const hiddenContentData = await getHiddenContentFromDb();
   const hiddenContentIds = hiddenContentData.map(content => content.contentId);
