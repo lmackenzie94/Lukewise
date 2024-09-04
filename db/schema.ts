@@ -28,6 +28,13 @@ export const hiddenContentTable = sqliteTable('hidden_content', {
   contentId: integer('content_id').unique().notNull()
 });
 
+export const bookSummariesTable = sqliteTable('book_summaries', {
+  id: integer('id').primaryKey(),
+  bookId: integer('book_id').unique().notNull(),
+  summary: text('summary').notNull(),
+  quiz: text('quiz').notNull()
+});
+
 export type InsertUser = typeof usersTable.$inferInsert;
 export type SelectUser = typeof usersTable.$inferSelect;
 

@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../index';
-import { SelectUser, usersTable } from '../schema';
+import { bookSummariesTable, SelectUser, usersTable } from '../schema';
 
 export async function getUserById(id: SelectUser['id']): Promise<
   Array<{
@@ -15,6 +15,14 @@ export async function getUserById(id: SelectUser['id']): Promise<
 
 export async function getHiddenContent() {
   return db.query.hiddenContentTable.findMany();
+}
+
+// TODO: retrun single object, not array
+export async function getBookSummary(bookId: number) {
+  return db
+    .select()
+    .from(bookSummariesTable)
+    .where(eq(bookSummariesTable.bookId, bookId));
 }
 
 // export async function getPostsForLast24Hours(

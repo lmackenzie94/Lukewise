@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { deleteHighlight, updateHighlight } from '../actions';
 import {
   FaCheckCircle,

@@ -1,4 +1,9 @@
-import { hideContent, refreshContent, unhideContent } from '@/app/actions';
+import {
+  generateBookSummary,
+  hideContent,
+  refreshContent,
+  unhideContent
+} from '@/app/actions';
 import { HighlightCard } from '@/app/components/HighlightCard';
 import { SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 import {
@@ -10,6 +15,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { RefreshButton } from '../../../components/RefreshButton';
+import { AIGenerateButton } from '@/app/components/AIGenerateButton';
+import { getBookSummary } from '@/db/queries/select';
+import ReactMarkdown from 'react-markdown';
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const book = await getContent(params.id);
@@ -36,6 +44,10 @@ export default async function BookPage({ params }: { params: { id: string } }) {
 
   //? passes the book id to the refreshContent action as first argument
   const refreshContentWithBookId = refreshContent.bind(null, book.id);
+
+  const bookSummary = await getBookSummary(book.id);
+
+  console.log('BOOK SUMMARY', bookSummary);
 
   return (
     <main className="container max-w-screen-md">
@@ -88,10 +100,34 @@ export default async function BookPage({ params }: { params: { id: string } }) {
               <RefreshButton />
             </form>
           </div>
+
+          {bookSummary.length === 0 && book.category === 'books' && (
+            <form action={generateBookSummary} className="inline-flex">
+              <input type="hidden" name="bookId" value={book.id} />
+              <input type="hidden" name="bookTitle" value={book.title} />
+              <input type="hidden" name="bookAuthor" value={book.author} />
+              <AIGenerateButton />
+            </form>
+          )}
         </div>
       </div>
 
       <div className="flex flex-col gap-4">
+        {bookSummary.length > 0 && (
+          <div className="bg-blue-50 p-4 rounded-md shadow-md">
+            {bookSummary[0].quiz.length > 0 && (
+              <div className="mt-4">
+                <details className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">
+                  <summary className="font-bold">Summary</summary>
+                  <ReactMarkdown className="text-sm whitespace-pre-line bg-white text-black px-3 rounded-sm mt-2">
+                    {JSON.parse(bookSummary[0].summary)}
+                  </ReactMarkdown>
+                </details>
+                <Quiz quiz={bookSummary[0].quiz} />
+              </div>
+            )}
+          </div>
+        )}
         {highlights.results.map(highlight => {
           const headingNotes = ['.h1', '.h2', '.h3', '.h4', '.h5', '.h6'];
           const isHeadingHighlight = headingNotes.some(note =>
@@ -137,3 +173,18 @@ async function UnhideButton({ contentId }: { contentId: number }) {
     </form>
   );
 }
+
+const Quiz = ({ quiz }: { quiz: string }) => {
+  const quizData: { question: string; answer: string }[] = JSON.parse(quiz);
+
+  return (
+    <div className="flex flex-col gap-4 text-sm">
+      {quizData.map((question, idx) => (
+        <details key={idx} className="bg-white px-4 py-2 rounded-md">
+          <summary className="font-bold">{question.question}</summary>
+          <p className="mt-2">{question.answer}</p>
+        </details>
+      ))}
+    </div>
+  );
+};
