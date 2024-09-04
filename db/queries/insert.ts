@@ -2,6 +2,7 @@ import { db } from '../index';
 import {
   bookSummariesTable,
   hiddenContentTable,
+  InsertBookSummary,
   InsertUser,
   usersTable
 } from '../schema';
@@ -14,10 +15,9 @@ export async function hideContentById(contentId: number) {
   await db.insert(hiddenContentTable).values({ contentId });
 }
 
-export async function addSummary(
-  bookId: number,
-  summary: string,
-  quiz: string
-) {
-  await db.insert(bookSummariesTable).values({ bookId, summary, quiz });
+export async function addSummary(data: InsertBookSummary) {
+  const { bookId, summary, keyPoints, quiz } = data;
+  await db
+    .insert(bookSummariesTable)
+    .values({ bookId, summary, keyPoints, quiz });
 }

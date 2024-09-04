@@ -32,6 +32,7 @@ export const bookSummariesTable = sqliteTable('book_summaries', {
   id: integer('id').primaryKey(),
   bookId: integer('book_id').unique().notNull(),
   summary: text('summary').notNull(),
+  keyPoints: text('key_points').notNull(),
   quiz: text('quiz').notNull()
 });
 
@@ -43,3 +44,6 @@ export type SelectUser = typeof usersTable.$inferSelect;
 
 export type InsertHiddenContent = typeof hiddenContentTable.$inferInsert;
 export type SelectHiddenContent = typeof hiddenContentTable.$inferSelect;
+
+export type InsertBookSummary = typeof bookSummariesTable.$inferInsert;
+export type SelectBookSummary = typeof bookSummariesTable.$inferSelect;

@@ -1,6 +1,11 @@
 import { eq } from 'drizzle-orm';
 import { db } from '../index';
-import { bookSummariesTable, SelectUser, usersTable } from '../schema';
+import {
+  bookSummariesTable,
+  SelectBookSummary,
+  SelectUser,
+  usersTable
+} from '../schema';
 
 export async function getUserById(id: SelectUser['id']): Promise<
   Array<{
@@ -18,7 +23,7 @@ export async function getHiddenContent() {
 }
 
 // TODO: retrun single object, not array
-export async function getBookSummary(bookId: number) {
+export async function getBookSummary(bookId: SelectBookSummary['bookId']) {
   return db
     .select()
     .from(bookSummariesTable)

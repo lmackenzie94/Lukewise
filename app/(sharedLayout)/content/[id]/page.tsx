@@ -47,8 +47,6 @@ export default async function BookPage({ params }: { params: { id: string } }) {
 
   const bookSummary = await getBookSummary(book.id);
 
-  console.log('BOOK SUMMARY', bookSummary);
-
   return (
     <main className="container max-w-screen-md">
       <div className="flex flex-col sm:flex-row text-center sm:text-left items-center gap-4 mb-8">
@@ -114,18 +112,23 @@ export default async function BookPage({ params }: { params: { id: string } }) {
 
       <div className="flex flex-col gap-4">
         {bookSummary.length > 0 && (
-          <div className="bg-blue-50 p-4 rounded-md shadow-md">
-            {bookSummary[0].quiz.length > 0 && (
-              <div className="mt-4">
-                <details className="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">
-                  <summary className="font-bold">Summary</summary>
-                  <ReactMarkdown className="text-sm whitespace-pre-line bg-white text-black px-3 rounded-sm mt-2">
-                    {JSON.parse(bookSummary[0].summary)}
-                  </ReactMarkdown>
-                </details>
-                <Quiz quiz={bookSummary[0].quiz} />
-              </div>
-            )}
+          <div className="my-4 flex flex-col gap-3">
+            {/* SUMMARY */}
+            <details className="bg-blue-500 text-white px-4 py-2 rounded-md">
+              <summary className="font-bold">Summary</summary>
+              <ReactMarkdown className="text-sm whitespace-pre-line bg-white/95 text-black p-2 sm:p-4 rounded-md mt-2">
+                {JSON.parse(bookSummary[0].summary)}
+              </ReactMarkdown>
+            </details>
+            {/* KEY POINTS */}
+            <details className="bg-purple-500 text-white px-4 py-2 rounded-md">
+              <summary className="font-bold">Key Points</summary>
+              <ReactMarkdown className="text-sm whitespace-pre-line bg-white/95 text-black px-2 sm:px-4 rounded-md mt-2">
+                {JSON.parse(bookSummary[0].keyPoints)}
+              </ReactMarkdown>
+            </details>
+            {/* QUIZ */}
+            <Quiz quiz={bookSummary[0].quiz} />
           </div>
         )}
         {highlights.results.map(highlight => {
@@ -178,9 +181,12 @@ const Quiz = ({ quiz }: { quiz: string }) => {
   const quizData: { question: string; answer: string }[] = JSON.parse(quiz);
 
   return (
-    <div className="flex flex-col gap-4 text-sm">
+    <div className="flex flex-col gap-3 text-sm">
       {quizData.map((question, idx) => (
-        <details key={idx} className="bg-white px-4 py-2 rounded-md">
+        <details
+          key={idx}
+          className="bg-white px-4 py-2 rounded-md border border-gray-300"
+        >
           <summary className="font-bold">{question.question}</summary>
           <p className="mt-2">{question.answer}</p>
         </details>

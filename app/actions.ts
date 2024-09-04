@@ -168,6 +168,7 @@ export const generateBookSummary = async (formData: FormData) => {
 
   const BookSummaryAndQuiz = z.object({
     summary: z.string(),
+    keyPoints: z.string(),
     quiz: z.array(
       z.object({
         question: z.string(),
@@ -179,32 +180,45 @@ export const generateBookSummary = async (formData: FormData) => {
   const bookId = formData.get('bookId') as string;
   const bookTitle = formData.get('bookTitle');
   const bookAuthor = formData.get('bookAuthor');
-  const prompt = `Summarize the key actionable insights from the book "${bookTitle}" by "${bookAuthor}" in no more than 10 short bullet points. Use markdown formatting like bullet points, bold, italics, and numbered lists. Ensure the summary focuses on the most practical takeaways that can be applied by the reader. Afterward, generate a short 4-6 question quiz based on these insights. Each question should target a critical concept or actionable step presented in the book. For each question, provide informative answers with context, ensuring the answers focus on how the user can apply the information in real-life situations. The answers should be no longer than 5 sentences.`;
+  const prompt = `Summarize the book "${bookTitle}" by "${bookAuthor}" in no more than 5 sentences. Follow this with a list of up to 10 key points or actionable insights, using markdown formatting such as bullet points, bold, italics, and numbered lists to enhance readability. Focus the key points on the most practical takeaways that the reader can apply directly.Afterward, generate a 4-6 question quiz based on these insights. Each question should address a critical concept or actionable step from the book. Provide concise, informative answers (no more than 5 sentences each), ensuring the answers offer context and focus on real-world application.
 
-  const completion = await openai.beta.chat.completions.parse({
-    model: 'gpt-4o-2024-08-06',
-    messages: [
-      {
-        role: 'system',
-        content: prompt
-      }
-      // { role: 'user', content: 'Quiet by Susan Cain' }
-    ],
-    response_format: zodResponseFormat(BookSummaryAndQuiz, 'summary')
-  });
+`;
 
-  const result = completion.choices[0].message.parsed;
+  try {
+    const completion = await openai.beta.chat.completions.parse({
+      model: 'gpt-4o-2024-08-06',
+      messages: [
+        {
+          role: 'system',
+          content: prompt
+        }
+        // { role: 'user', content: 'Quiet by Susan Cain' }
+      ],
+      response_format: zodResponseFormat(BookSummaryAndQuiz, 'summary')
+    });
 
-  if (!result || !bookId) {
+    const result = completion.choices[0].message.parsed;
+
+    if (!result || !bookId) {
+      return null;
+    }
+
+    const summary = JSON.stringify(result.summary);
+    const keyPoints = JSON.stringify(result.keyPoints);
+    const quiz = JSON.stringify(result.quiz);
+
+    await addSummary({
+      bookId: parseInt(bookId),
+      summary,
+      keyPoints,
+      quiz
+    });
+
+    revalidatePath(`/content/${bookId}`);
+
+    return result;
+  } catch (error) {
+    console.error('Error generating summary or saving to database:', error);
     return null;
   }
-
-  const summary = JSON.stringify(result.summary);
-  const quiz = JSON.stringify(result.quiz);
-
-  await addSummary(parseInt(bookId), summary, quiz);
-
-  revalidatePath(`/content/${bookId}`);
-
-  return result;
 };
