@@ -127,7 +127,7 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
   return (
     <div
       key={highlight.id}
-      className="bg-white p-4 sm:p-6 pb-4 sm:pb-4 rounded-md shadow-md"
+      className="bg-white px-6 py-4 sm:px-8 sm:py-6 rounded-md shadow-md relative"
     >
       {isEditing && (
         <>
@@ -198,7 +198,7 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
           )}
 
           {!isDeleting && (
-            <div className="flex justify-end mt-4 gap-2">
+            <div className="absolute top-1/2 -translate-y-1/2 -right-3 flex flex-col gap-3 bg-white rounded-md px-1 py-2 shadow-[3px_0_5px_-3px_rgba(0,0,0,0.2)]">
               <button
                 onClick={toggleEditing}
                 className="text-blue-400 hover:text-blue-500 text-lg"
