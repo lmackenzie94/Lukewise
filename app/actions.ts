@@ -159,12 +159,14 @@ const passwordIsCorrect = (formData: FormData) => {
   return password === process.env.EDIT_PASSWORD;
 };
 
-const openai = new OpenAI();
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 export const generateBookSummary = async (formData: FormData) => {
-  const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-  });
+  // const openai = new OpenAI({
+  //   apiKey: process.env.OPENAI_API_KEY
+  // });
 
   const BookSummaryAndQuiz = z.object({
     summary: z.string(),
