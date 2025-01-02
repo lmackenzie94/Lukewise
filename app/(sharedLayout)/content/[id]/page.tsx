@@ -34,13 +34,9 @@ export function generateStaticParams() {
   return [];
 }
 
-export default function BookPage({ params }: { params: { id: string } }) {
-  return <BookContent bookId={params.id} />;
-}
-
-async function BookContent({ bookId }: { bookId: string }) {
-  const book = await getContent(bookId);
-  const highlights = await getContentHighlights(bookId);
+export default async function BookPage({ params }: { params: { id: string } }) {
+  const book = await getContent(params.id);
+  const highlights = await getContentHighlights(params.id);
 
   if (!book) {
     return <div>Book not found</div>;
