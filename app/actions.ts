@@ -94,7 +94,7 @@ export const deleteHighlight = async (
   };
 };
 
-export const hideContent = async (formData: FormData) => {
+export const hideContent = async (formData: FormData): Promise<void> => {
   // if (!passwordIsCorrect(formData)) {
   //   return {
   //     ok: false,
@@ -105,13 +105,13 @@ export const hideContent = async (formData: FormData) => {
 
   const contentId = formData.get('contentId');
 
-  if (!contentId) {
-    return {
-      ok: false,
-      status: 400,
-      message: 'Content ID is required'
-    };
-  }
+  // if (!contentId) {
+  //   return {
+  //     ok: false,
+  //     status: 400,
+  //     message: 'Content ID is required'
+  //   };
+  // }
 
   await hideContentById(Number(contentId));
 
@@ -123,16 +123,16 @@ export const hideContent = async (formData: FormData) => {
   // redirect('/content');
 };
 
-export const unhideContent = async (formData: FormData) => {
+export const unhideContent = async (formData: FormData): Promise<void> => {
   const contentId = formData.get('contentId');
 
-  if (!contentId) {
-    return {
-      ok: false,
-      status: 400,
-      message: 'Content ID is required'
-    };
-  }
+  // if (!contentId) {
+  //   return {
+  //     ok: false,
+  //     status: 400,
+  //     message: 'Content ID is required'
+  //   };
+  // }
 
   await unhideContentById(Number(contentId));
 
@@ -163,7 +163,9 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY
 });
 
-export const generateBookSummary = async (formData: FormData) => {
+export const generateBookSummary = async (
+  formData: FormData
+): Promise<void> => {
   // const openai = new OpenAI({
   //   apiKey: process.env.OPENAI_API_KEY
   // });
@@ -202,7 +204,8 @@ export const generateBookSummary = async (formData: FormData) => {
     const result = completion.choices[0].message.parsed;
 
     if (!result || !bookId) {
-      return null;
+      console.error('Error generating summary or saving to database');
+      return;
     }
 
     const summary = JSON.stringify(result.summary);
@@ -218,9 +221,9 @@ export const generateBookSummary = async (formData: FormData) => {
 
     revalidatePath(`/content/${bookId}`);
 
-    return result;
+    // return result;
   } catch (error) {
     console.error('Error generating summary or saving to database:', error);
-    return null;
+    return;
   }
 };
