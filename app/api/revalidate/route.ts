@@ -1,6 +1,9 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 
+// This endpoint is used by a Vercel cron job to revalidate the daily-review page
+// CRON_SECRET is set in the Vercel dashboard
+// The value of the variable will be automatically sent as an Authorization header when Vercel invokes your cron job.
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {

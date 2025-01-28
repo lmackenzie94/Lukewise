@@ -7,7 +7,8 @@ import { Metadata } from 'next';
 import { CATEGORIES, SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 import { Suspense } from 'react';
 
-export const revalidate = 86400; // 1 day
+// This route is automatically revalidated at 5am each day via a Vercel cron job
+// export const revalidate = 86400; // 1 day
 
 const PAGE_TITLE = 'Daily Review';
 
