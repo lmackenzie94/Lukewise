@@ -15,11 +15,12 @@ export const metadata: Metadata = {
 
 const PAGE_SIZE = 5;
 
-export default function FavouritesPage({
-  searchParams
-}: {
-  searchParams: { page: string };
-}) {
+export default async function FavouritesPage(
+  props: {
+    searchParams: Promise<{ page: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const currentPage = Number(searchParams.page) || 1;
 
   return (

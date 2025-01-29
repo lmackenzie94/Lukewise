@@ -17,11 +17,12 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION
 };
 
-export default function DailyReview({
-  searchParams
-}: {
-  searchParams: { highlight: string };
-}) {
+export default async function DailyReview(
+  props: {
+    searchParams: Promise<{ highlight: string }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const todaysDate = new Date().toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',

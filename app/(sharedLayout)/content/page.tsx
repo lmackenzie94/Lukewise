@@ -15,15 +15,16 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION
 };
 
-export default async function ContentPage({
-  searchParams
-}: {
-  searchParams: {
-    category: BookCategory | undefined;
-    author: string | undefined;
-    showHidden: string | undefined;
-  };
-}) {
+export default async function ContentPage(
+  props: {
+    searchParams: Promise<{
+      category: BookCategory | undefined;
+      author: string | undefined;
+      showHidden: string | undefined;
+    }>;
+  }
+) {
+  const searchParams = await props.searchParams;
   const currentCategory = searchParams.category;
   const currentAuthor = searchParams.author;
   const showHidden = searchParams.showHidden === 'true';

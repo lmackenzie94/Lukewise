@@ -19,7 +19,8 @@ import { AIGenerateButton } from '@/app/components/AIGenerateButton';
 import { getBookSummary } from '@/db/queries/select';
 import ReactMarkdown from 'react-markdown';
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const book = await getContent(params.id);
 
   return {
@@ -34,7 +35,8 @@ export function generateStaticParams() {
   return [];
 }
 
-export default async function BookPage({ params }: { params: { id: string } }) {
+export default async function BookPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const book = await getContent(params.id);
   const highlights = await getContentHighlights(params.id);
 
