@@ -9,6 +9,7 @@ import { Suspense } from 'react';
 
 // This route is automatically revalidated at 7am each day via a Vercel cron job (NOTE: cron is in UTC time - 12pm UTC = 7am EST)
 // Additionally, using "searchParams" causes the page to be dynamic (i.e. server-rendered on demand) b/c it's value isn't known until request time
+// ... as such, "revalidate" won't work here
 
 const PAGE_TITLE = 'Daily Review';
 
@@ -17,11 +18,9 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION
 };
 
-export default async function DailyReview(
-  props: {
-    searchParams: Promise<{ highlight: string }>;
-  }
-) {
+export default async function DailyReview(props: {
+  searchParams: Promise<{ highlight: string }>;
+}) {
   const searchParams = await props.searchParams;
   const todaysDate = new Date().toLocaleDateString('en-US', {
     month: 'long',
@@ -167,9 +166,7 @@ function HighlightStack({
             </p>
           </div>
         </div>
-        <p className="text-sm sm:text-base whitespace-pre-line">
-          {currentHighlight.text}
-        </p>
+        <p className="text-sm sm:text-base">{currentHighlight.text}</p>
         {currentHighlight.note && (
           <details className="mt-4 text-sm bg-blue-50 rounded-md px-2 py-1">
             <summary className="text-sm font-bold">Luke&apos;s Note</summary>

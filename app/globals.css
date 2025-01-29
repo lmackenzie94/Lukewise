@@ -53,3 +53,17 @@ textarea {
     transform: rotate(360deg);
   }
 }
+
+.react-markdown {
+  ul {
+    @apply list-disc pl-4 pt-1;
+  }
+
+  ol {
+    @apply list-decimal pl-4;
+  }
+
+  li {
+    @apply pt-1;
+  }
+}

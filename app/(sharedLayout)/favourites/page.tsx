@@ -15,11 +15,9 @@ export const metadata: Metadata = {
 
 const PAGE_SIZE = 5;
 
-export default async function FavouritesPage(
-  props: {
-    searchParams: Promise<{ page: string }>;
-  }
-) {
+export default async function FavouritesPage(props: {
+  searchParams: Promise<{ page: string }>;
+}) {
   const searchParams = await props.searchParams;
   const currentPage = Number(searchParams.page) || 1;
 
@@ -61,9 +59,7 @@ const HighlightCard = ({ highlight }: { highlight: FavouriteHighlight }) => {
       key={highlight.id}
       className="flex flex-col bg-white rounded-lg shadow-md overflow-hidden"
     >
-      <p className="p-6 sm:p-8 text-sm sm:text-base whitespace-pre-line">
-        {highlight.text}
-      </p>
+      <p className="p-6 sm:p-8 text-sm sm:text-base">{highlight.text}</p>
 
       <div className="flex items-center gap-4 bg-blue-50/70 px-6 sm:px-8 py-4">
         {highlight.cover_image_url && (

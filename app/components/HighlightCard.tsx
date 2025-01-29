@@ -186,7 +186,7 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
 
       {!isEditing && (
         <>
-          <ReactMarkdown className="text-sm sm:text-base whitespace-pre-line">
+          <ReactMarkdown className="react-markdown text-sm sm:text-base">
             {sanitizedText}
           </ReactMarkdown>
 

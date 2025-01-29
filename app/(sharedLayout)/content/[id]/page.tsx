@@ -19,7 +19,9 @@ import { AIGenerateButton } from '@/app/components/AIGenerateButton';
 import { getBookSummary } from '@/db/queries/select';
 import ReactMarkdown from 'react-markdown';
 
-export async function generateMetadata(props: { params: Promise<{ id: string }> }) {
+export async function generateMetadata(props: {
+  params: Promise<{ id: string }>;
+}) {
   const params = await props.params;
   const book = await getContent(params.id);
 
@@ -35,7 +37,9 @@ export function generateStaticParams() {
   return [];
 }
 
-export default async function BookPage(props: { params: Promise<{ id: string }> }) {
+export default async function BookPage(props: {
+  params: Promise<{ id: string }>;
+}) {
   const params = await props.params;
   const book = await getContent(params.id);
   const highlights = await getContentHighlights(params.id);
@@ -118,14 +122,14 @@ export default async function BookPage(props: { params: Promise<{ id: string }> 
             {/* SUMMARY */}
             <details className="bg-blue-500 text-white px-4 py-2 rounded-md">
               <summary className="font-bold">Summary</summary>
-              <ReactMarkdown className="text-sm whitespace-pre-line bg-white/95 text-black p-2 sm:p-4 rounded-md mt-2">
+              <ReactMarkdown className="react-markdown text-sm bg-white/95 text-black p-2 sm:p-4 rounded-md mt-2">
                 {JSON.parse(bookSummary[0].summary)}
               </ReactMarkdown>
             </details>
             {/* KEY POINTS */}
             <details className="bg-purple-500 text-white px-4 py-2 rounded-md">
               <summary className="font-bold">Key Points</summary>
-              <ReactMarkdown className="text-sm whitespace-pre-line bg-white/95 text-black px-2 sm:px-4 rounded-md mt-2">
+              <ReactMarkdown className="react-markdown text-sm bg-white/95 text-black p-2 sm:p-4 rounded-md mt-2">
                 {JSON.parse(bookSummary[0].keyPoints)}
               </ReactMarkdown>
             </details>
