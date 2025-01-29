@@ -7,7 +7,7 @@ import { Metadata } from 'next';
 import { CATEGORIES, SITE_DESCRIPTION, SITE_TITLE } from '@/app/constants';
 import { Suspense } from 'react';
 
-// This route is automatically revalidated at 5am each day via a Vercel cron job
+// This route is automatically revalidated at 7am each day via a Vercel cron job (NOTE: cron is in UTC time - 12pm UTC = 7am EST)
 // Additionally, using "searchParams" causes the page to be dynamic (i.e. server-rendered on demand) b/c it's value isn't known until request time
 
 const PAGE_TITLE = 'Daily Review';
