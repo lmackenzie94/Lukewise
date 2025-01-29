@@ -35,16 +35,18 @@ export async function fetchReadwise<T>(
       headers: {
         ...options.headers,
         Authorization: `Token ${READWISE_API_KEY}`
+      },
+      cache: 'force-cache', // as of v15, "no-store" is the default (i.e. cache is disabled)
+      next: {
+        revalidate: false // cache indefinitely
       }
-      // next: {
-      //   revalidate: false // cache indefinitely
-      // }
     });
 
     if (!response.ok) {
-      throw new Error(
+      console.error(
         `Failed to fetch Readwise endpoint ${endpoint}: ${response.statusText}`
       );
+      return null;
     }
 
     //? was getting an error "Unexpected end of JSON input" when calling the deleteHighlight action
