@@ -54,7 +54,7 @@ export default async function BookPage(props: {
   const bookSummary = await getBookSummary(book.id);
 
   return (
-    <main className="container max-w-screen-md">
+    <main className="container max-w-(--breakpoint-md)">
       <div className="flex flex-col sm:flex-row text-center sm:text-left items-center gap-4 mb-8">
         {book.cover_image_url && (
           <Image

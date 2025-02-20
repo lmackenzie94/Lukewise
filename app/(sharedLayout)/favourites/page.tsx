@@ -22,7 +22,7 @@ export default async function FavouritesPage(props: {
   const currentPage = Number(searchParams.page) || 1;
 
   return (
-    <main className="container max-w-screen-sm">
+    <main className="container max-w-(--breakpoint-sm)">
       <h1 className="text-2xl font-bold mb-6 text-center sr-only">
         {PAGE_TITLE}
       </h1>
@@ -103,7 +103,7 @@ const Pagination = ({
     <div className="flex justify-between mt-10 items-center">
       {hasPreviousPage ? (
         <Link
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-sm"
           href={`/favourites/?page=${currentPage - 1}`}
           aria-label="Previous page"
         >
@@ -119,7 +119,7 @@ const Pagination = ({
       </p>
       {hasNextPage ? (
         <Link
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-sm"
           href={`/favourites/?page=${currentPage + 1}`}
           aria-label="Next page"
         >

@@ -134,13 +134,13 @@ export const HighlightCard = ({ highlight }: { highlight: Highlight }) => {
           <div className="flex gap-2 text-[.65rem] mb-2">
             <button
               onClick={toggleBold}
-              className="border border-blue-500 px-2 rounded font-bold"
+              className="border border-blue-500 px-2 rounded-sm font-bold"
             >
               Bold
             </button>
             <button
               onClick={toggleItalic}
-              className="border border-blue-500 px-2 rounded italic"
+              className="border border-blue-500 px-2 rounded-sm italic"
             >
               Italic
             </button>

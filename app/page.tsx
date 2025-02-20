@@ -19,7 +19,7 @@ export default function Home() {
           <Link
             href={href}
             key={href}
-            className={`block text-lg md:text-2xl font-bold py-4 px-8 ${colours.text} bg-slate-50 border-2 shadow-[5px_5px_0_0] mb-5 ${colours.border} font-mono font-bold tracking-tight ${colours.bgFaded} hocus:shadow-none transition-all duration-500 ${colours.hocus} hocus:text-white hocus:outline-none`}
+            className={`block text-lg md:text-2xl font-bold py-4 px-8 ${colours.text} bg-slate-50 border-2 shadow-[5px_5px_0_0] mb-5 ${colours.border} font-mono font-bold tracking-tight ${colours.bgFaded} hocus:shadow-none transition-all duration-500 ${colours.hocus} hocus:text-white hocus:outline-hidden`}
           >
             {label} {emoji}
           </Link>

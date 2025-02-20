@@ -93,7 +93,7 @@ export const ContentList = ({
           name="search"
           id="search"
           placeholder="Search..."
-          className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+          className="w-full rounded-md border border-gray-300 px-4 py-2 text-sm text-gray-900 focus:border-blue-500 focus:outline-hidden focus:ring-blue-500 bg-white/50"
           value={searchTerm}
           onChange={handleSearch}
         />
@@ -154,7 +154,7 @@ const ContentCard = ({
           alt={content.title}
           width={200}
           height={200}
-          className="object-cover w-12 h-12 rounded-full flex-shrink-0"
+          className="object-cover w-12 h-12 rounded-full shrink-0"
         />
       )}
       <div>

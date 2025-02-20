@@ -29,7 +29,7 @@ export default async function DailyReview(props: {
   });
 
   return (
-    <main className="container max-w-screen-sm mx-auto">
+    <main className="container max-w-(--breakpoint-sm) mx-auto">
       <p className="text-blue-500 mb-1 text-sm sm:text-base text-center font-medium">
         {todaysDate}
       </p>

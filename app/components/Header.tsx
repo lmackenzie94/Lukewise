@@ -26,7 +26,7 @@ export default function Header() {
               <Link
                 href={href}
                 key={href}
-                className={`hocus:underline outline-none ${
+                className={`hocus:underline outline-hidden ${
                   isActive ? colours.text : ''
                 }`}
               >

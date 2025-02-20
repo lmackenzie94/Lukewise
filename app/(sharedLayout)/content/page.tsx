@@ -92,7 +92,7 @@ const Sidebar = ({
   authorsToDisplay: string[];
 }) => {
   return (
-    <div className="bg-gray-200 p-4 rounded-md w-full md:w-1/4 min-w-[200px] flex-shrink-0 md:sticky md:top-4 md:h-[80vh]">
+    <div className="bg-gray-200 p-4 rounded-md w-full md:w-1/4 min-w-[200px] shrink-0 md:sticky md:top-4 md:h-[80vh]">
       {authorsToDisplay.length > 0 && (
         <div>
           <h2 className="text-lg font-bold mb-2">Authors</h2>
